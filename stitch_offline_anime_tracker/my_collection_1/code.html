@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Anilog - My Collection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9f9",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "background": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-container": "#e3e2e2",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "primary": "#000000",
+                        "primary-fixed": "#e5e2e1",
+                        "inverse-surface": "#2f3131",
+                        "on-surface": "#1a1c1c",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#e3e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary": "#000000",
+                        "inverse-on-surface": "#f1f1f1",
+                        "on-primary-fixed-variant": "#474746",
+                        "primary-container": "#1c1b1b",
+                        "surface-tint": "#5f5e5e",
+                        "on-secondary-container": "#646464",
+                        "on-secondary-fixed-variant": "#464747",
+                        "on-surface-variant": "#444748",
+                        "inverse-primary": "#c8c6c5",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed": "#1c1b1b",
+                        "tertiary-container": "#1a1c1c",
+                        "surface-container": "#eeeeee",
+                        "on-primary-container": "#858383",
+                        "secondary": "#5e5e5e",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#747878",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c4c7c7",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-tertiary-container": "#838484",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dadada",
+                        "error": "#ba1a1a",
+                        "on-background": "#1a1c1c",
+                        "tertiary-fixed": "#e2e2e2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "stack-xl": "64px",
+                        "stack-md": "24px",
+                        "unit": "4px",
+                        "stack-xs": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Work Sans"],
+                        "body-sm": ["Work Sans"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "label-caps": ["Geist"],
+                        "brand-logo": ["Geist"],
+                        "headline-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "22px", "letterSpacing": "0px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "300" }],
+                        "label-caps": ["10px", { "lineHeight": "12px", "letterSpacing": "0.15em", "fontWeight": "600" }],
+                        "brand-logo": ["11px", { "lineHeight": "14px", "letterSpacing": "0.2em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "300" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Subtle slide-in animation for list items */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-in {
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        
+        /* Hide scrollbar for tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32 font-body-lg text-body-lg selection:bg-primary-fixed selection:text-on-primary-fixed antialiased">
+<!-- TopAppBar (From JSON) -->
+<header class="bg-transparent w-full top-0 flat no shadows sticky z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-[1140px] mx-auto">
+<h1 class="font-brand-logo text-brand-logo tracking-[0.2em] uppercase text-on-surface">ANILOG</h1>
+<!-- Desktop Navigation (Hidden on mobile) -->
+<nav class="hidden md:flex gap-8">
+<a class="font-label-caps text-label-caps text-secondary hover:opacity-70 transition-opacity" href="#">Dashboard</a>
+<a class="font-label-caps text-label-caps text-secondary hover:opacity-70 transition-opacity" href="#">Search</a>
+<a class="font-label-caps text-label-caps text-primary relative after:content-[''] after:absolute after:-bottom-2 after:w-1 after:h-1 after:bg-primary after:rounded-full after:left-1/2 after:-translate-x-1/2" href="#">Collection</a>
+<a class="font-label-caps text-label-caps text-secondary hover:opacity-70 transition-opacity" href="#">Profile</a>
+</nav>
+<div class="md:hidden">
+<button class="hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full px-margin-mobile md:px-margin-desktop max-w-[1140px] mx-auto mt-stack-md">
+<!-- Page Header -->
+<div class="mb-stack-md md:mb-stack-xl">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">Collection</h2>
+</div>
+<!-- Tabbed Navigation -->
+<div class="w-full border-b border-surface-variant mb-stack-md overflow-x-auto no-scrollbar">
+<div class="flex gap-8 min-w-max px-2">
+<button class="pb-3 border-b border-primary text-primary font-body-sm text-body-sm transition-colors cursor-pointer">
+                    Watching <span class="ml-1 text-on-surface-variant text-xs opacity-60">4</span>
+</button>
+<button class="pb-3 border-b border-transparent text-on-surface-variant hover:text-primary hover:border-surface-variant transition-colors font-body-sm text-body-sm cursor-pointer">
+                    Plan to Watch <span class="ml-1 text-xs opacity-60">12</span>
+</button>
+<button class="pb-3 border-b border-transparent text-on-surface-variant hover:text-primary hover:border-surface-variant transition-colors font-body-sm text-body-sm cursor-pointer">
+                    Completed <span class="ml-1 text-xs opacity-60">48</span>
+</button>
+</div>
+</div>
+<!-- Anime List -->
+<div class="flex flex-col gap-6">
+<!-- Card 1 -->
+<div class="group flex gap-4 items-center animate-slide-in hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-16 h-24 md:w-20 md:h-28 shrink-0 overflow-hidden bg-surface-variant border border-surface-dim relative">
+<img alt="Anime thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A moody, high-contrast poster art for a cyberpunk anime featuring a lone figure looking over a neon-lit dystopian city. The scene is dominated by deep charcoal blacks and subtle cool grays, aligning with a high-fidelity minimalist zen aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqqtmXMZNbE7LF0oT-J2Bv1S4AkwKXosQ5uxbUXb9pfmRyxrkHToMfkf5mRmu8IoQbPzdJxnj5X0s5gmlGE31enifpQ3nji7_JeJm-_ZCUzJeDEUnfyRmGKDRzUiprjLQAlqE9BT7yMGXkACZiL5s85yg3pX7IeHSkK-wfX_OYd2zLp7IQPkG0DnCue4XRJgyC0DE--UrwgXyX0--17EuK3N9_QCl0YMfeIyWTEsK13HTCelfl-VPI"/>
+</div>
+<div class="flex-1 min-w-0 py-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg text-primary truncate pr-4">Neon Genesis Evangelion</h3>
+<div class="flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px] filled text-primary" data-icon="star">star</span>
+<span class="font-label-caps text-label-caps text-primary">9.5/10</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-1">Sci-Fi, Psychological, Mecha</p>
+<div class="w-full h-[1px] bg-surface-variant relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 75%;"></div>
+</div>
+<div class="flex justify-between mt-1.5">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EP 19/26</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex gap-4 items-center animate-slide-in delay-100 hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-16 h-24 md:w-20 md:h-28 shrink-0 overflow-hidden bg-surface-variant border border-surface-dim relative">
+<img alt="Anime thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="Minimalist line-art style illustration of a sprawling fantasy landscape with a massive ancient tree in the distance. The lighting is soft and diffused, creating an ethereal, quiet atmosphere in muted monochrome tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7q1Ln_HUUUik5Iu8t9igVEcgto52eHfh0KlKWh4qOqb3gstuLYsqMymEaO55jftx0n7AxlX0AtfjThwIxSaaZist5JzrZvrCtefcBXnr67GlzvrjFIU8ASLh7wa3JCQXy9aGx21bTplisVnYJH_2KdOkP94q9XiMkPMtjk1ACSL3PbTOfOUbCqR6szLvQOPAwpfrNRxb-yF_a7Ixk5pwsUTnJcN9c-TbNhm45jrh9ax2JZ5cHeGU7"/>
+</div>
+<div class="flex-1 min-w-0 py-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg text-primary truncate pr-4">Frieren: Beyond Journey's End</h3>
+<div class="flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="star">star</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">- / 10</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-1">Adventure, Drama, Fantasy</p>
+<div class="w-full h-[1px] bg-surface-variant relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 45%;"></div>
+</div>
+<div class="flex justify-between mt-1.5">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EP 13/28</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex gap-4 items-center animate-slide-in delay-200 hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-16 h-24 md:w-20 md:h-28 shrink-0 overflow-hidden bg-surface-variant border border-surface-dim relative">
+<img alt="Anime thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A sparse, architectural rendering of a futuristic laboratory interior. Clean lines, vast empty spaces, and stark white lighting evoke a clinical, high-tech environment consistent with a premium analog design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiOTV7VzdJOWJRha7zVEDssvztGOF1yA_shfO6abzbK1vaF-G7D5vqf7ghbCz73ldl5E2QTIb2QofbyaZxw_o5_PRrvH2EiiTn6ffiGiKi_HOXs0rquzooElZuhJlaHB-S1GO9dNqvV9iCNIAz0Hx0uNxEZ1QYmEPqXkilvzKHudtYjoKIogvR6RhNY_iFtmXSfoYOpp4G9Bp2VFghD1djAtQwApwuM5Wfdwtkh8vvtVGPzmiL1sDx"/>
+</div>
+<div class="flex-1 min-w-0 py-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg text-primary truncate pr-4">Steins;Gate</h3>
+<div class="flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px] filled text-primary" data-icon="star">star</span>
+<span class="font-label-caps text-label-caps text-primary">8.8/10</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-1">Sci-Fi, Thriller</p>
+<div class="w-full h-[1px] bg-surface-variant relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 15%;"></div>
+</div>
+<div class="flex justify-between mt-1.5">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EP 4/24</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex gap-4 items-center animate-slide-in delay-300 hover:bg-surface-container-low p-2 -mx-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-16 h-24 md:w-20 md:h-28 shrink-0 overflow-hidden bg-surface-variant border border-surface-dim relative">
+<img alt="Anime thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="Abstract minimalist representation of a jazz club. Sharp shadows, a single spotlight illuminating a microphone stand, and heavy use of negative space. The aesthetic is sophisticated, quiet, and rendered entirely in grayscale." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdQFLOPsVJ1wzj8K5M_gzlpIuIfxbve9ot_swQ6WAzortQ-fD09WlOF8wokaa43VdIF1u6F8QHvtkiytxXwdQomtuueTbWWE6eGWJR_t2hPdLFQW-yjerYRLUc-jIpGCdgUWgWIX2fiqOF-weI6VHDZsSiWrwCeKYI_g1VPllNutUsa9efWLhiE4DWfqm9GDHvZTJRTWfoHzVbDwJEokvvYUas_jZazkxN7wMucEmURxVqQK37rhYn"/>
+</div>
+<div class="flex-1 min-w-0 py-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg text-primary truncate pr-4">Cowboy Bebop</h3>
+<div class="flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px] filled text-primary" data-icon="star">star</span>
+<span class="font-label-caps text-label-caps text-primary">9.1/10</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 line-clamp-1">Action, Sci-Fi, Space</p>
+<div class="w-full h-[1px] bg-surface-variant relative">
+<div class="absolute top-0 left-0 h-full bg-primary" style="width: 90%;"></div>
+</div>
+<div class="flex justify-between mt-1.5">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EP 24/26</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (From JSON) - Mobile Only -->
+<nav class="md:hidden bg-tertiary/80 backdrop-blur-md fixed bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-md rounded-full shadow-[0_20px_40px_rgba(0,0,0,0.04)] shadow-xl z-50 flex justify-around items-center px-6 py-4">
+<a class="text-on-secondary-container opacity-50 hover:opacity-100 transition-opacity scale-95 active:scale-90 transition-transform flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+</a>
+<a class="text-on-secondary-container opacity-50 hover:opacity-100 transition-opacity scale-95 active:scale-90 transition-transform flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<!-- Add Action (Prominent in center) -->
+<button class="text-primary hover:opacity-100 transition-opacity scale-95 active:scale-90 transition-transform flex flex-col items-center justify-center w-10 h-10 rounded-full bg-on-secondary shadow-sm border border-surface-variant relative -top-2">
+<span class="material-symbols-outlined font-light" data-icon="add">add</span>
+</button>
+<!-- Active Tab: library_books maps to Collection -->
+<a class="text-on-surface relative after:content-[''] after:absolute after:-bottom-2 after:w-1 after:h-1 after:bg-primary after:rounded-full hover:opacity-100 transition-opacity scale-95 active:scale-90 transition-transform flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+</a>
+<a class="text-on-secondary-container opacity-50 hover:opacity-100 transition-opacity scale-95 active:scale-90 transition-transform flex flex-col items-center gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+<!-- Desktop Floating Action Button (Only visible on md+) -->
+<div class="hidden md:flex fixed bottom-12 right-12 z-50">
+<button class="flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-container border border-surface-dim rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:scale-105 active:scale-95 group">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="add">add</span>
+<span class="font-label-caps text-label-caps text-primary group-hover:text-primary transition-colors">Add to Collection</span>
+</button>
+</div>
+</body></html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Anilog - Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c8c6c5",
+                        "surface-variant": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#1c1b1b",
+                        "surface-container-high": "#e8e8e8",
+                        "inverse-primary": "#c8c6c5",
+                        "background": "#f9f9f9",
+                        "on-surface": "#1a1c1c",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3f4",
+                        "on-secondary-fixed-variant": "#93000d",
+                        "outline": "#747878",
+                        "secondary-fixed-dim": "#ffb4ac",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#ffdad6",
+                        "on-tertiary-container": "#868381",
+                        "on-background": "#1a1c1c",
+                        "tertiary-fixed-dim": "#cac6c3",
+                        "surface-container": "#eeeeee",
+                        "on-primary-fixed-variant": "#474646",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#484645",
+                        "on-secondary-fixed": "#410002",
+                        "secondary": "#b7131a",
+                        "primary-container": "#1c1b1b",
+                        "on-primary-container": "#858383",
+                        "surface-tint": "#5f5e5e",
+                        "primary-fixed": "#e5e2e1",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#000000",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#e6e1df",
+                        "outline-variant": "#c4c7c7",
+                        "on-error": "#ffffff",
+                        "surface": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface-variant": "#444748",
+                        "secondary-container": "#db322f",
+                        "on-tertiary-fixed": "#1c1b1a",
+                        "tertiary-container": "#1c1b1a",
+                        "on-secondary-container": "#fffbff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-padding": "24px",
+                        "desktop-max-width": "1200px",
+                        "gutter": "16px",
+                        "island-gap": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Bricolage Grotesque"],
+                        "headline-xl": ["Bricolage Grotesque"],
+                        "body-lg": ["Bricolage Grotesque"],
+                        "headline-lg": ["Bricolage Grotesque"],
+                        "label-md": ["Bricolage Grotesque"],
+                        "headline-lg-mobile": ["Bricolage Grotesque"],
+                        "body-md": ["Bricolage Grotesque"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            background-color: #f9f9f9;
+        }
+        .island-shadow {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        }
+        .nav-dock-shadow {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+        .search-input:focus {
+            border-bottom-color: #000000;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col pb-32">
+<!-- Top App Bar -->
+<header class="bg-background dark:bg-background docked full-width top-0 flex justify-between items-center w-full px-container-padding py-4 sticky z-40">
+<div class="flex items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-primary dark:text-on-primary-fixed text-2xl" data-icon="face">face</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-black text-primary dark:text-on-primary-fixed uppercase tracking-widest">ANILOG</h1>
+<div class="w-6"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-desktop-max-width mx-auto px-container-padding pt-8 flex flex-col gap-island-gap">
+<!-- Search Section -->
+<section class="w-full flex flex-col gap-6">
+<div class="relative w-full max-w-2xl mx-auto">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl" data-icon="search">search</span>
+<input autofocus="" class="search-input w-full bg-transparent border-0 border-b border-outline-variant/50 focus:ring-0 focus:border-primary text-headline-lg-mobile font-headline-lg-mobile pl-12 py-4 transition-colors placeholder:text-on-surface-variant/40" placeholder="Search anime, manga, characters..." type="text"/>
+</div>
+</section>
+<!-- Categories / Filters -->
+<section class="w-full max-w-2xl mx-auto flex flex-wrap gap-3">
+<button class="bg-surface-container-high text-on-surface font-label-md text-label-md px-4 py-2 rounded-[4px] hover:bg-surface-variant transition-colors">Anime</button>
+<button class="bg-surface-container-high text-on-surface font-label-md text-label-md px-4 py-2 rounded-[4px] hover:bg-surface-variant transition-colors">Manga</button>
+<button class="bg-surface-container-high text-on-surface font-label-md text-label-md px-4 py-2 rounded-[4px] hover:bg-surface-variant transition-colors">Characters</button>
+<button class="bg-surface-container-high text-on-surface font-label-md text-label-md px-4 py-2 rounded-[4px] hover:bg-surface-variant transition-colors">Staff</button>
+</section>
+<!-- Trending / Quick Picks -->
+<section class="w-full max-w-2xl mx-auto flex flex-col gap-6 mt-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Trending Now</h2>
+<div class="flex flex-col gap-4">
+<!-- List Item 1 -->
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20 hover:opacity-70 transition-opacity cursor-pointer group">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-bold group-hover:text-secondary transition-colors">Frieren: Beyond Journey's End</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Anime • 28 Episodes</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20 hover:opacity-70 transition-opacity cursor-pointer group">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-bold group-hover:text-secondary transition-colors">Jujutsu Kaisen</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Manga • Ongoing</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20 hover:opacity-70 transition-opacity cursor-pointer group">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-bold group-hover:text-secondary transition-colors">Solo Leveling</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Anime • 12 Episodes</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- List Item 4 -->
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20 hover:opacity-70 transition-opacity cursor-pointer group">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-bold group-hover:text-secondary transition-colors">One Piece</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Anime • Ongoing</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-surface-container-lowest dark:bg-surface-container-lowest rounded-full nav-dock-shadow z-50 flex justify-around items-center h-20 px-4 mb-4 mx-auto border border-outline-variant/20 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1 group-active:scale-90 transition-transform duration-150" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Active State for Search -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary font-bold hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 group relative" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1 group-active:scale-90 transition-transform duration-150" data-icon="search" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+<div class="absolute bottom-1 w-1 h-1 bg-secondary rounded-full"></div>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1 group-active:scale-90 transition-transform duration-150" data-icon="add">add</span>
+<span class="font-label-sm text-label-sm">Add</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1 group-active:scale-90 transition-transform duration-150" data-icon="library_books">library_books</span>
+<span class="font-label-sm text-label-sm">Collection</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-1 group-active:scale-90 transition-transform duration-150" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Desktop Navigation (Hidden on mobile) -->
+<nav class="hidden md:flex fixed top-0 right-0 h-full w-64 bg-surface-container-lowest border-l border-outline-variant/20 flex-col pt-24 px-6 gap-2 z-30 island-shadow">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-secondary/10 text-secondary font-bold hover:bg-secondary/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="search" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label-md text-label-md">Search</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-label-md text-label-md">Add</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-label-md text-label-md">Collection</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+</body></html>

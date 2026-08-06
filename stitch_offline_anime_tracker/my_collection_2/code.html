@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Anilog - My Collection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#c8c6c5",
+                      "surface-variant": "#e2e2e2",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#1c1b1b",
+                      "surface-container-high": "#e8e8e8",
+                      "inverse-primary": "#c8c6c5",
+                      "background": "#f9f9f9",
+                      "on-surface": "#1a1c1c",
+                      "surface-bright": "#f9f9f9",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f3f3f4",
+                      "on-secondary-fixed-variant": "#93000d",
+                      "outline": "#747878",
+                      "secondary-fixed-dim": "#ffb4ac",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#ffdad6",
+                      "on-tertiary-container": "#868381",
+                      "on-background": "#1a1c1c",
+                      "tertiary-fixed-dim": "#cac6c3",
+                      "surface-container": "#eeeeee",
+                      "on-primary-fixed-variant": "#474646",
+                      "inverse-surface": "#2f3131",
+                      "surface-dim": "#dadada",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#484645",
+                      "on-secondary-fixed": "#410002",
+                      "secondary": "#b7131a",
+                      "primary-container": "#1c1b1b",
+                      "on-primary-container": "#858383",
+                      "surface-tint": "#5f5e5e",
+                      "primary-fixed": "#e5e2e1",
+                      "tertiary": "#000000",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary": "#000000",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#e6e1df",
+                      "outline-variant": "#c4c7c7",
+                      "on-error": "#ffffff",
+                      "surface": "#f9f9f9",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-surface-variant": "#444748",
+                      "secondary-container": "#db322f",
+                      "on-tertiary-fixed": "#1c1b1a",
+                      "tertiary-container": "#1c1b1a",
+                      "on-secondary-container": "#fffbff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-padding": "24px",
+                      "desktop-max-width": "1200px",
+                      "gutter": "16px",
+                      "island-gap": "32px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Bricolage Grotesque"
+                      ],
+                      "headline-xl": [
+                              "Bricolage Grotesque"
+                      ],
+                      "body-lg": [
+                              "Bricolage Grotesque"
+                      ],
+                      "headline-lg": [
+                              "Bricolage Grotesque"
+                      ],
+                      "label-md": [
+                              "Bricolage Grotesque"
+                      ],
+                      "headline-lg-mobile": [
+                              "Bricolage Grotesque"
+                      ],
+                      "body-md": [
+                              "Bricolage Grotesque"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .floating-island {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        }
+
+        .tab-indicator {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom bottom nav curve */
+        .nav-curve {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 48px;
+            background-color: transparent;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 -20px 0 0 theme('colors.surface-container-lowest');
+            z-index: 40;
+        }
+        
+        .nav-curve::before, .nav-curve::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background-color: transparent;
+        }
+
+        .nav-curve::before {
+            left: -20px;
+            border-top-right-radius: 20px;
+            box-shadow: 10px -10px 0 0 theme('colors.surface-container-lowest');
+        }
+
+        .nav-curve::after {
+            right: -20px;
+            border-top-left-radius: 20px;
+            box-shadow: -10px -10px 0 0 theme('colors.surface-container-lowest');
+        }
+      </style>
+</head>
+<body class="font-body-md antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background docked full-width top-0 bg-background dark:bg-background flex justify-between items-center w-full px-container-padding py-4 sticky z-30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-on-primary-fixed cursor-pointer hover:opacity-80 transition-opacity" data-icon="face">face</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-widest font-black text-primary dark:text-on-primary-fixed">ANILOG</h1>
+</div>
+<div class="hidden md:flex gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Search</a>
+<a class="font-label-md text-label-md text-secondary dark:text-secondary-fixed hover:opacity-80 transition-opacity" href="#">Collection</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Profile</a>
+</div>
+</header>
+<main class="max-w-desktop-max-width mx-auto px-gutter md:px-container-padding mt-8">
+<!-- Header Section -->
+<div class="mb-8 md:mb-12">
+<h2 class="font-headline-xl text-headline-xl text-primary mb-2">My Collection</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Track your anime journey.</p>
+</div>
+<!-- Tabs Island -->
+<div class="bg-surface-container-lowest rounded-xl p-2 flex relative floating-island mb-8 overflow-x-auto no-scrollbar">
+<button class="flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md text-primary bg-surface-container-low transition-colors relative z-10" onclick="switchTab(0)">Watched</button>
+<button class="flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container/50 transition-colors relative z-10" onclick="switchTab(1)">Watching</button>
+<button class="flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container/50 transition-colors relative z-10" onclick="switchTab(2)">Plan to Watch</button>
+</div>
+<!-- Collection List -->
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer">
+<img class="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" data-alt="A minimalist square thumbnail showing a close-up of a high-tech glowing eye, anime style, clean lines, dark background with vibrant red accent, premium light mode ui aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMSA3A42czP-t-30nOxFeHO6O-roc_4SqkHsuMXEI2j3WrDBzSgPiNslY6HCCiT_KPBNLSWizUyvBswKALplGJjh3NCcEqNl0shmuA-Bh_i1gGYkAEm_g0aX6CI_lYRbh4KenQ7Q2mdO5yoA-QDc8n8L9KAp7jsqBFGI6yXDmLiFmzcI6WI9xvPpwSnYST4nf-UDaLGlc83oI9RaZmwDiYsfluRhaERTjl2nQ3WLYwGgVeqzmvJcJo"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-primary truncate">Cyberpunk: Edgerunners</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm truncate">10 Episodes • Sci-Fi, Action</p>
+</div>
+<div class="text-right pl-4 border-l border-surface-variant">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.5</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer">
+<img class="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" data-alt="A minimalist square thumbnail showing a serene landscape with a traditional japanese gate, anime style, clean lines, bright sky, premium light mode ui aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZzfKm3dGXTzK4es7eAl2MVnUzGqh5MQ_9zwmYh4MSZsG_JZ4FS6zqT2yAhWP85rQ6ZnuFmR-3TEouP7ivbQc8vEfDhavdi_PA6LU6fsc_v-ANRMHsoxh0QkZw3JLRZIbS2CB_BeeL6rrWAAsUa9mxI0wxqBbOJcWGvM0CkffpfhI4Dbxvd5qb9xo3J_Ef55tNaZTgb1tBZ9GudIdu8GpWQPq4jBW4Yw01HvBFpl3VEcRqrpvqmNBM"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-primary truncate">Jujutsu Kaisen 0</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm truncate">Movie • Action, Supernatural</p>
+</div>
+<div class="text-right pl-4 border-l border-surface-variant">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.0</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer">
+<img class="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" data-alt="A minimalist square thumbnail showing an abstract swirling energy pattern in stark black and white, anime style, clean lines, premium light mode ui aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUg9pXHDL_7gtm88hlf6E_saY-DOzyhp56Ic1Fe3pS2uZdKZuMjzl_-xlooqAQqWaIxw6vDxs5EI12C6zmzg8AP7SDoPAgLDUo8b59HH8hNbJcC44Q2aV0k_kqOqiBjSH4ZvGr-mYSEit9vfpSv6NEtG4P6pvFWjEOwGRwxXic61YkOXLENi765giXogy4XsxlcIVULRix7WRmjiZwEmB4SAjwmYtwLjY2Y14L4HfwzFnR1iIX505B"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-primary truncate">Attack on Titan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm truncate">87 Episodes • Action, Drama</p>
+</div>
+<div class="text-right pl-4 border-l border-surface-variant">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.8</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+</div>
+</div>
+<!-- Item 4 (No Image, Text Row Fallback Example) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high border border-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="movie">movie</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-primary truncate">Spirited Away</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm truncate">Movie • Fantasy, Adventure</p>
+</div>
+<div class="text-right pl-4 border-l border-surface-variant">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary block">10</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container-lowest dark:bg-surface-container-lowest fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md rounded-full shadow-xl dark:shadow-none border border-outline-variant/20 shadow-2xl fixed bottom-unit left-0 right-0 z-50 flex justify-around items-center h-20 px-4 mb-4 mx-auto">
+<!-- Dashboard -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm hidden">Dashboard</span>
+</a>
+<!-- Search -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 mr-8" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="font-label-sm text-label-sm hidden">Search</span>
+</a>
+<!-- Add (Floating FAB in Center) -->
+<div class="absolute left-1/2 -translate-x-1/2 -top-6 z-50">
+<button class="bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- Decorative cutout effect on the nav bar -->
+<div class="nav-curve pointer-events-none"></div>
+</div>
+<!-- Collection (Active) -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary font-bold hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 ml-8" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="library_books" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span class="font-label-sm text-label-sm hidden">Collection</span>
+<div class="w-1 h-1 bg-secondary rounded-full mt-1"></div>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors w-16 h-16" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm hidden">Profile</span>
+</a>
+</nav>
+<script>
+        function switchTab(index) {
+            const buttons = document.querySelectorAll('.bg-surface-container-lowest > button');
+            buttons.forEach((btn, i) => {
+                if(i === index) {
+                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container/50');
+                    btn.classList.add('text-primary', 'bg-surface-container-low');
+                } else {
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container/50');
+                    btn.classList.remove('text-primary', 'bg-surface-container-low');
+                }
+            });
+        }
+    </script>
+</body></html>
