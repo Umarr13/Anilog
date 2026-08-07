@@ -44,38 +44,3 @@
   }
 }
 
-/* Custom bottom nav curve */
-.nav-curve {
-  position: absolute;
-  top: -24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 48px;
-  background-color: transparent;
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
-  box-shadow: 0 -20px 0 0 theme('colors.surface-container-lowest');
-  z-index: 40;
-}
-
-.nav-curve::before, .nav-curve::after {
-  content: '';
-  position: absolute;
-  top: 20px;
-  width: 20px;
-  height: 20px;
-  background-color: transparent;
-}
-
-.nav-curve::before {
-  left: -20px;
-  border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 0 theme('colors.surface-container-lowest');
-}
-
-.nav-curve::after {
-  right: -20px;
-  border-top-left-radius: 20px;
-  box-shadow: -10px -10px 0 0 theme('colors.surface-container-lowest');
-}

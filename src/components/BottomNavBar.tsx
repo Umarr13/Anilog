@@ -26,8 +26,6 @@ export default function BottomNavBar({ activeTab }: BottomNavBarProps) {
         <button className="bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
           <span className="material-symbols-outlined text-3xl">add</span>
         </button>
-        {/* Decorative cutout effect on the nav bar */}
-        <div className="nav-curve pointer-events-none"></div>
       </div>
       
       {/* Collection */}
@@ -38,7 +36,7 @@ export default function BottomNavBar({ activeTab }: BottomNavBarProps) {
       </Link>
       
       {/* Profile */}
-      <Link to="#" className={`flex flex-col items-center justify-center hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 ${activeTab === 'profile' ? 'text-secondary dark:text-secondary font-bold' : 'text-on-surface-variant dark:text-on-surface-variant'}`}>
+      <Link to="/profile" className={`flex flex-col items-center justify-center hover:bg-surface-container-low rounded-full transition-colors w-16 h-16 ${activeTab === 'profile' ? 'text-secondary dark:text-secondary font-bold' : 'text-on-surface-variant dark:text-on-surface-variant'}`}>
         <span className={`material-symbols-outlined mb-1 ${activeTab === 'profile' ? 'filled' : ''}`}>person</span>
         <span className="font-label-sm text-label-sm hidden">Profile</span>
         {activeTab === 'profile' && <div className="w-1 h-1 bg-secondary rounded-full mt-1"></div>}

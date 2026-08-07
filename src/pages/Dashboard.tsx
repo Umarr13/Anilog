@@ -1,25 +1,9 @@
-import Layout from '../assets/components/Layout.tsx';
+import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   return (
     <Layout activeTab="dashboard">
-      {/* Sanity Gauge Island */}
-      <section className="bg-surface-container-lowest rounded-2xl island-shadow p-8 flex flex-col items-center justify-center">
-        <h2 className="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-6">Current Sanity</h2>
-        <div className="relative w-48 h-48 flex items-center justify-center">
-          {/* Circular progress track */}
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle className="text-surface-container-high" cx="50" cy="50" fill="none" r="45" stroke="currentColor" strokeWidth="2"></circle>
-            {/* Progress (approx 75%) */}
-            <circle className="text-primary transition-all duration-1000 ease-out" cx="50" cy="50" fill="none" r="45" stroke="currentColor" strokeDasharray="283" strokeDashoffset="70" strokeWidth="4"></circle>
-          </svg>
-          <div className="absolute flex flex-col items-center">
-            <span className="font-headline-xl text-headline-xl text-primary">75%</span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">Stable</span>
-          </div>
-        </div>
-      </section>
 
       {/* Current Focus Island */}
       <section className="bg-surface-container-lowest rounded-2xl island-shadow p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
@@ -47,10 +31,10 @@ export default function Dashboard() {
             Arc: Egghead Island<br />
             Episode: 1093
           </p>
-          <button className="bg-primary text-on-primary font-label-md text-label-md py-4 px-8 rounded-lg hover:opacity-90 transition-opacity w-full md:w-auto flex items-center justify-center gap-2">
+          <Link to="/anime/one-piece" className="bg-primary text-on-primary font-label-md text-label-md py-4 px-8 rounded-lg hover:opacity-90 transition-opacity w-full md:w-auto flex items-center justify-center gap-2">
             <span className="material-symbols-outlined filled">play_arrow</span>
             Resume
-          </button>
+          </Link>
         </div>
       </section>
 

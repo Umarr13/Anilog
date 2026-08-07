@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import Search from './pages/Search.tsx';
 import Collection from './pages/Collection.tsx';
 import AnimeDetails from './pages/AnimeDetails.tsx';
+import Profile from './pages/Profile.tsx';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/anime/:id" element={<AnimeDetails />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

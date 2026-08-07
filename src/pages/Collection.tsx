@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import Layout from '../assets/components/Layout.tsx';
+import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
+import { getAnimeByStatus } from '../data/animeData';
 
 export default function Collection() {
   const [activeTab, setActiveTab] = useState(0);
+  const statuses = ['completed', 'watching', 'plan_to_watch'] as const;
+  const filteredAnime = getAnimeByStatus(statuses[activeTab]);
 
   return (
     <Layout activeTab="collection">
@@ -37,71 +40,30 @@ export default function Collection() {
 
       {/* Collection List */}
       <div className="space-y-4 animate-slide-in">
-        {/* Item 1 */}
-        <Link to="/anime/cyberpunk" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMSA3A42czP-t-30nOxFeHO6O-roc_4SqkHsuMXEI2j3WrDBzSgPiNslY6HCCiT_KPBNLSWizUyvBswKALplGJjh3NCcEqNl0shmuA-Bh_i1gGYkAEm_g0aX6CI_lYRbh4KenQ7Q2mdO5yoA-QDc8n8L9KAp7jsqBFGI6yXDmLiFmzcI6WI9xvPpwSnYST4nf-UDaLGlc83oI9RaZmwDiYsfluRhaERTjl2nQ3WLYwGgVeqzmvJcJo"
-            alt="Cyberpunk Thumbnail"
-          />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-label-md text-label-md text-primary truncate">Cyberpunk: Edgerunners</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">10 Episodes • Sci-Fi, Action</p>
+        {filteredAnime.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-on-surface-variant mb-4">Your collection is empty.</p>
+            <Link to="/search" className="bg-primary text-on-primary px-6 py-2 rounded-full font-label-md hover:bg-surface-tint">Search for anime to add</Link>
           </div>
-          <div className="text-right pl-4 border-l border-surface-variant">
-            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.5</span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
-          </div>
-        </Link>
-
-        {/* Item 2 */}
-        <Link to="/anime/jujutsu" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZzfKm3dGXTzK4es7eAl2MVnUzGqh5MQ_9zwmYh4MSZsG_JZ4FS6zqT2yAhWP85rQ6ZnuFmR-3TEouP7ivbQc8vEfDhavdi_PA6LU6fsc_v-ANRMHsoxh0QkZw3JLRZIbS2CB_BeeL6rrWAAsUa9mxI0wxqBbOJcWGvM0CkffpfhI4Dbxvd5qb9xo3J_Ef55tNaZTgb1tBZ9GudIdu8GpWQPq4jBW4Yw01HvBFpl3VEcRqrpvqmNBM"
-            alt="Jujutsu Kaisen 0 Thumbnail"
-          />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-label-md text-label-md text-primary truncate">Jujutsu Kaisen 0</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">Movie • Action, Supernatural</p>
-          </div>
-          <div className="text-right pl-4 border-l border-surface-variant">
-            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.0</span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
-          </div>
-        </Link>
-
-        {/* Item 3 */}
-        <Link to="/anime/aot" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUg9pXHDL_7gtm88hlf6E_saY-DOzyhp56Ic1Fe3pS2uZdKZuMjzl_-xlooqAQqWaIxw6vDxs5EI12C6zmzg8AP7SDoPAgLDUo8b59HH8hNbJcC44Q2aV0k_kqOqiBjSH4ZvGr-mYSEit9vfpSv6NEtG4P6pvFWjEOwGRwxXic61YkOXLENi765giXogy4XsxlcIVULRix7WRmjiZwEmB4SAjwmYtwLjY2Y14L4HfwzFnR1iIX505B"
-            alt="Attack on Titan Thumbnail"
-          />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-label-md text-label-md text-primary truncate">Attack on Titan</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">87 Episodes • Action, Drama</p>
-          </div>
-          <div className="text-right pl-4 border-l border-surface-variant">
-            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">9.8</span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
-          </div>
-        </Link>
-
-        {/* Item 4 */}
-        <Link to="/anime/spirited-away" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <div className="w-16 h-16 rounded-lg bg-surface-container-high border border-surface-variant flex items-center justify-center">
-            <span className="material-symbols-outlined text-on-surface-variant">movie</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-label-md text-label-md text-primary truncate">Spirited Away</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">Movie • Fantasy, Adventure</p>
-          </div>
-          <div className="text-right pl-4 border-l border-surface-variant">
-            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">10</span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
-          </div>
-        </Link>
+        ) : (
+          filteredAnime.map(anime => (
+            <Link key={anime.id} to={`/anime/${anime.id}`} className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
+              <img
+                className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
+                src={anime.image}
+                alt={`${anime.title} Thumbnail`}
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-label-md text-label-md text-primary truncate">{anime.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">{anime.episodes ? `${anime.episodes} Episodes` : 'Ongoing'} • {anime.genres.join(', ')}</p>
+              </div>
+              <div className="text-right pl-4 border-l border-surface-variant">
+                <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">{anime.score ? Math.round(anime.score * 10) / 10 : '-'}</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+              </div>
+            </Link>
+          ))
+        )}
       </div>
 
       {/* Floating Action Button - Desktop only */}

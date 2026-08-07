@@ -79,4 +79,4 @@ jobs:
           files: |
             android/app/build/outputs/apk/release/Anilog-${{ github.ref_name }}.apk
           draft: false
-          prerelease: false
+          prerelease: true
