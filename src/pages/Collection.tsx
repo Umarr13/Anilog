@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Layout from '../components/Layout.tsx';
+import Layout from '../assets/components/Layout.tsx';
 import { Link } from 'react-router-dom';
 
 export default function Collection() {
@@ -15,20 +15,20 @@ export default function Collection() {
 
       {/* Tabs Island */}
       <div className="bg-surface-container-lowest rounded-xl p-2 flex relative floating-island mb-8 overflow-x-auto no-scrollbar">
-        <button 
-          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 0 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`} 
+        <button
+          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 0 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`}
           onClick={() => setActiveTab(0)}
         >
           Watched
         </button>
-        <button 
-          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 1 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`} 
+        <button
+          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 1 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`}
           onClick={() => setActiveTab(1)}
         >
           Watching
         </button>
-        <button 
-          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 2 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`} 
+        <button
+          className={`flex-1 py-3 px-6 text-center rounded-lg font-label-md text-label-md transition-colors relative z-10 whitespace-nowrap ${activeTab === 2 ? 'text-primary bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container/50'}`}
           onClick={() => setActiveTab(2)}
         >
           Plan to Watch
@@ -39,10 +39,10 @@ export default function Collection() {
       <div className="space-y-4 animate-slide-in">
         {/* Item 1 */}
         <Link to="/anime/cyberpunk" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img 
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMSA3A42czP-t-30nOxFeHO6O-roc_4SqkHsuMXEI2j3WrDBzSgPiNslY6HCCiT_KPBNLSWizUyvBswKALplGJjh3NCcEqNl0shmuA-Bh_i1gGYkAEm_g0aX6CI_lYRbh4KenQ7Q2mdO5yoA-QDc8n8L9KAp7jsqBFGI6yXDmLiFmzcI6WI9xvPpwSnYST4nf-UDaLGlc83oI9RaZmwDiYsfluRhaERTjl2nQ3WLYwGgVeqzmvJcJo" 
-            alt="Cyberpunk Thumbnail" 
+          <img
+            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMSA3A42czP-t-30nOxFeHO6O-roc_4SqkHsuMXEI2j3WrDBzSgPiNslY6HCCiT_KPBNLSWizUyvBswKALplGJjh3NCcEqNl0shmuA-Bh_i1gGYkAEm_g0aX6CI_lYRbh4KenQ7Q2mdO5yoA-QDc8n8L9KAp7jsqBFGI6yXDmLiFmzcI6WI9xvPpwSnYST4nf-UDaLGlc83oI9RaZmwDiYsfluRhaERTjl2nQ3WLYwGgVeqzmvJcJo"
+            alt="Cyberpunk Thumbnail"
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-label-md text-label-md text-primary truncate">Cyberpunk: Edgerunners</h3>
@@ -56,10 +56,10 @@ export default function Collection() {
 
         {/* Item 2 */}
         <Link to="/anime/jujutsu" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img 
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZzfKm3dGXTzK4es7eAl2MVnUzGqh5MQ_9zwmYh4MSZsG_JZ4FS6zqT2yAhWP85rQ6ZnuFmR-3TEouP7ivbQc8vEfDhavdi_PA6LU6fsc_v-ANRMHsoxh0QkZw3JLRZIbS2CB_BeeL6rrWAAsUa9mxI0wxqBbOJcWGvM0CkffpfhI4Dbxvd5qb9xo3J_Ef55tNaZTgb1tBZ9GudIdu8GpWQPq4jBW4Yw01HvBFpl3VEcRqrpvqmNBM" 
-            alt="Jujutsu Kaisen 0 Thumbnail" 
+          <img
+            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZzfKm3dGXTzK4es7eAl2MVnUzGqh5MQ_9zwmYh4MSZsG_JZ4FS6zqT2yAhWP85rQ6ZnuFmR-3TEouP7ivbQc8vEfDhavdi_PA6LU6fsc_v-ANRMHsoxh0QkZw3JLRZIbS2CB_BeeL6rrWAAsUa9mxI0wxqBbOJcWGvM0CkffpfhI4Dbxvd5qb9xo3J_Ef55tNaZTgb1tBZ9GudIdu8GpWQPq4jBW4Yw01HvBFpl3VEcRqrpvqmNBM"
+            alt="Jujutsu Kaisen 0 Thumbnail"
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-label-md text-label-md text-primary truncate">Jujutsu Kaisen 0</h3>
@@ -73,10 +73,10 @@ export default function Collection() {
 
         {/* Item 3 */}
         <Link to="/anime/aot" className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 floating-island hover:scale-[1.01] transition-transform cursor-pointer block">
-          <img 
-            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUg9pXHDL_7gtm88hlf6E_saY-DOzyhp56Ic1Fe3pS2uZdKZuMjzl_-xlooqAQqWaIxw6vDxs5EI12C6zmzg8AP7SDoPAgLDUo8b59HH8hNbJcC44Q2aV0k_kqOqiBjSH4ZvGr-mYSEit9vfpSv6NEtG4P6pvFWjEOwGRwxXic61YkOXLENi765giXogy4XsxlcIVULRix7WRmjiZwEmB4SAjwmYtwLjY2Y14L4HfwzFnR1iIX505B" 
-            alt="Attack on Titan Thumbnail" 
+          <img
+            className="w-16 h-16 rounded-lg object-cover bg-surface-container-low border border-surface-variant"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUg9pXHDL_7gtm88hlf6E_saY-DOzyhp56Ic1Fe3pS2uZdKZuMjzl_-xlooqAQqWaIxw6vDxs5EI12C6zmzg8AP7SDoPAgLDUo8b59HH8hNbJcC44Q2aV0k_kqOqiBjSH4ZvGr-mYSEit9vfpSv6NEtG4P6pvFWjEOwGRwxXic61YkOXLENi765giXogy4XsxlcIVULRix7WRmjiZwEmB4SAjwmYtwLjY2Y14L4HfwzFnR1iIX505B"
+            alt="Attack on Titan Thumbnail"
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-label-md text-label-md text-primary truncate">Attack on Titan</h3>

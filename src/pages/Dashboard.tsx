@@ -1,4 +1,4 @@
-import Layout from '../components/Layout.tsx';
+import Layout from '../assets/components/Layout.tsx';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -26,10 +26,10 @@ export default function Dashboard() {
         {/* Image Area */}
         <div className="w-full md:w-1/2 aspect-square md:aspect-auto md:h-80 rounded-xl overflow-hidden bg-surface-container relative flex-shrink-0 cursor-pointer">
           <Link to="/anime/one-piece">
-            <img 
-              alt="Current Focus Artwork" 
-              className="w-full h-full object-cover object-top mix-blend-multiply transition-transform hover:scale-105 duration-700" 
-              src="/luffy_icon.png" 
+            <img
+              alt="Current Focus Artwork"
+              className="w-full h-full object-cover object-top mix-blend-multiply transition-transform hover:scale-105 duration-700"
+              src="/luffy_icon.png"
             />
             <div className="absolute inset-0 border border-outline-variant/10 rounded-xl pointer-events-none"></div>
           </Link>

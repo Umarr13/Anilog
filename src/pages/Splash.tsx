@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ShaderBackground from '../components/ShaderBackground.tsx';
+import ShaderBackground from '../assets/components/ShaderBackground.tsx';
 
 export default function Splash() {
   const navigate = useNavigate();

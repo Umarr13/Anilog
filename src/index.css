@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@100..900&family=Manrope:wght@200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
 @layer base {
   body {
-    @apply bg-background text-on-background min-h-screen antialiased;
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-family: 'Bricolage Grotesque', sans-serif;
   }
 }
@@ -26,7 +28,7 @@
   }
 
   .floating-island {
-    @apply island-shadow;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
   }
 
   .progress-glow {
