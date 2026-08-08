@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
-import { getAnimeByStatus } from '../data/animeData';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../data/db';
 
 export default function Collection() {
   const [activeTab, setActiveTab] = useState(0);
   const statuses = ['completed', 'watching', 'plan_to_watch'] as const;
-  const filteredAnime = getAnimeByStatus(statuses[activeTab]);
+  const filteredAnime = useLiveQuery(
+    () => db.anime.where('status').equals(statuses[activeTab]).toArray(),
+    [activeTab]
+  ) || [];
 
   return (
     <Layout activeTab="collection">
