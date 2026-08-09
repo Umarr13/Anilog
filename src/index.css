@@ -11,6 +11,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Bricolage Grotesque', sans-serif;
+    /* Prevent pull-to-refresh interference with swipe gestures */
+    overscroll-behavior-y: contain;
+  }
+
+  /* Phase 3.9 — Respect reduced-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -42,5 +53,21 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-}
 
+  /* Phase 3.7 — Ensure minimum 44px touch targets */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Phase 3.2 — Subtle press feedback */
+  .press-feedback {
+    transition: transform 0.1s cubic-bezier(0.22, 0.68, 0, 1.2);
+  }
+  .press-feedback:active {
+    transform: scale(0.95);
+  }
+}
