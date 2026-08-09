@@ -163,7 +163,8 @@ export default function Search() {
                     className="flex gap-4 p-4 border border-surface-variant rounded-xl island-shadow bg-surface-container-lowest hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
                   >
                     <div className="w-16 h-24 bg-surface-variant flex-shrink-0 relative overflow-hidden rounded">
-                      <img
+                      <motion.img
+                        layoutId={`anime-cover-${anime.id}`}
                         className="blur-up absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply transition-all duration-500"
                         src={anime.coverImage.large || anime.coverImage.extraLarge}
                         alt={anime.title.romaji || anime.title.english}

@@ -189,7 +189,8 @@ export default function Collection() {
                       className={`bg-surface-container-lowest rounded-xl flex floating-island hover:scale-[1.01] transition-transform cursor-pointer block relative z-10 ${isGridMode ? 'flex-col aspect-[3/4] p-0' : 'flex-row items-center gap-4 p-4'}`}
                     >
                       <div className={`relative ${isGridMode ? 'w-full h-full' : 'w-16 h-16 flex-shrink-0'}`}>
-                        <img
+                        <motion.img
+                          layoutId={`anime-cover-${anime.id}`}
                           className={`blur-up object-cover bg-surface-container-low border border-surface-variant ${isGridMode ? 'w-full h-full rounded-xl' : 'w-16 h-16 rounded-lg'}`}
                           src={anime.image}
                           alt={`${anime.title} Thumbnail`}

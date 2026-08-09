@@ -286,7 +286,8 @@ export default function AnimeDetails() {
                 transition={{ ...transitions.default, delay: 0.1 }}
                 style={{ scale: heroScale, opacity: heroOpacity }}
               >
-                <img 
+                <motion.img 
+                  layoutId={`anime-cover-${animeId}`}
                   className="blur-up w-full h-full object-contain" 
                   src={displayImage} 
                   alt={`${displayTitle} Cover`}

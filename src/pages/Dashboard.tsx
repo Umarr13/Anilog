@@ -64,7 +64,8 @@ export default function Dashboard() {
             >
               <Link to={`/anime/${anime.id}`} className="block h-full flex flex-col">
                 <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container relative mb-3">
-                  <img
+                  <motion.img
+                    layoutId={`anime-cover-${anime.id}`}
                     alt={anime.title}
                     className="blur-up w-full h-full object-cover object-top mix-blend-multiply transition-transform group-hover:scale-105 duration-700"
                     src={anime.image}
