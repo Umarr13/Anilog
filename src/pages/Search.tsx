@@ -19,6 +19,11 @@ export default function Search() {
   // 3.4 — Restore search query from sessionStorage
   const [query, setQuery] = useState(() => sessionStorage.getItem(SEARCH_QUERY_KEY) || '');
   const [results, setResults] = useState<AniListAnime[]>([]);
+  const [trending, setTrending] = useState<AniListAnime[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('anilog_recent_searches') || '[]'); } catch { return []; }
+  });
+  const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -33,11 +38,17 @@ export default function Search() {
       setError('');
       try {
         if (query.trim() === '') {
-          const trending = await getTrendingAnime();
-          setResults(trending);
+          const trend = await getTrendingAnime();
+          setResults(trend);
+          setTrending(trend.slice(0, 4));
         } else {
           const searchRes = await searchAnime(query);
           setResults(searchRes);
+          if (searchRes.length > 0 && !recentSearches.includes(query)) {
+            const newRecent = [query, ...recentSearches].slice(0, 5);
+            setRecentSearches(newRecent);
+            localStorage.setItem('anilog_recent_searches', JSON.stringify(newRecent));
+          }
         }
       } catch (err: any) {
         setError(err.message || 'Failed to fetch anime');
@@ -67,6 +78,8 @@ export default function Search() {
             placeholder="Search AniList..."
             type="text"
             value={query}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onChange={(e) => setQuery(e.target.value)}
           />
           {/* Clear button */}
@@ -80,6 +93,30 @@ export default function Search() {
             </button>
           )}
         </div>
+
+        {/* 4.12 Recent Searches */}
+        {isFocused && query.trim() === '' && recentSearches.length > 0 && (
+          <motion.div 
+            className="absolute top-16 left-0 right-0 bg-surface-container-low rounded-xl island-shadow z-20 flex flex-col p-2 border border-outline-variant/10"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex justify-between items-center px-4 py-2 text-on-surface-variant">
+              <span className="font-label-sm uppercase tracking-wider">Recent Searches</span>
+              <button onClick={() => { setRecentSearches([]); localStorage.removeItem('anilog_recent_searches'); }} className="text-xs hover:text-primary">Clear</button>
+            </div>
+            {recentSearches.map(term => (
+              <button 
+                key={term} 
+                onClick={() => setQuery(term)} 
+                className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container rounded-lg text-left transition-colors"
+              >
+                <span className="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+                <span className="font-body-md text-primary">{term}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
       </section>
 
       {/* Results Section */}
@@ -146,7 +183,6 @@ export default function Search() {
                 </motion.div>
               ))
             ) : (
-              /* 3.5 — Empty state with CTA */
               <motion.div
                 className="col-span-full flex flex-col items-center text-center py-16"
                 variants={variants.fadeSlideUp}
@@ -156,15 +192,23 @@ export default function Search() {
               >
                 <span className="material-symbols-outlined text-6xl text-on-surface-variant/40 mb-4">search_off</span>
                 <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">No results found</h3>
-                <p className="text-on-surface-variant font-body-md text-body-md mb-6">
-                  No anime matched "{query}". Try a different title or spelling.
+                <p className="text-on-surface-variant font-body-md text-body-md mb-8">
+                  No anime matched "{query}". Check out these popular titles instead:
                 </p>
-                <button
-                  onClick={() => setQuery('')}
-                  className="bg-primary text-on-primary px-6 py-3 rounded-full font-label-md hover:opacity-90 transition-opacity active:scale-95"
-                >
-                  Browse Trending
-                </button>
+                
+                {/* 4.31 Smart Empty Search State */}
+                <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+                  {trending.slice(0, 4).map(anime => (
+                    <Link
+                      key={anime.id}
+                      to={`/anime/${anime.id}`}
+                      className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl island-shadow p-2 flex flex-col gap-2 hover:-translate-y-1 transition-transform"
+                    >
+                       <img src={anime.coverImage.large} alt="" className="w-full h-24 object-cover rounded" />
+                       <span className="font-label-sm text-sm truncate w-full text-primary">{anime.title.english || anime.title.romaji}</span>
+                    </Link>
+                  ))}
+                </div>
               </motion.div>
             )}
           </motion.div>
