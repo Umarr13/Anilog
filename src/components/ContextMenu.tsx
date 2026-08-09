@@ -31,7 +31,7 @@ export default function ContextMenu({ children, items, disabled }: ContextMenuPr
   const LONG_PRESS_MS = 500;
 
   const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
+    () => {
       if (disabled) return;
       longPressTimer.current = setTimeout(() => {
         setOpen(true);
