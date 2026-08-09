@@ -66,8 +66,9 @@ export default function Dashboard() {
                 <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container relative mb-3">
                   <img
                     alt={anime.title}
-                    className="w-full h-full object-cover object-top mix-blend-multiply transition-transform group-hover:scale-105 duration-700"
+                    className="blur-up w-full h-full object-cover object-top mix-blend-multiply transition-transform group-hover:scale-105 duration-700"
                     src={anime.image}
+                    onLoad={(e) => e.currentTarget.classList.add('loaded')}
                   />
                   <div className="absolute inset-0 border border-outline-variant/10 rounded-xl pointer-events-none"></div>
                   

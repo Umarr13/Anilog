@@ -190,9 +190,10 @@ export default function Collection() {
                     >
                       <div className={`relative ${isGridMode ? 'w-full h-full' : 'w-16 h-16 flex-shrink-0'}`}>
                         <img
-                          className={`object-cover bg-surface-container-low border border-surface-variant ${isGridMode ? 'w-full h-full rounded-xl' : 'w-16 h-16 rounded-lg'}`}
+                          className={`blur-up object-cover bg-surface-container-low border border-surface-variant ${isGridMode ? 'w-full h-full rounded-xl' : 'w-16 h-16 rounded-lg'}`}
                           src={anime.image}
                           alt={`${anime.title} Thumbnail`}
+                          onLoad={(e) => e.currentTarget.classList.add('loaded')}
                         />
                         {/* 4.13 Airing Today Badge */}
                         {isAiringToday && (

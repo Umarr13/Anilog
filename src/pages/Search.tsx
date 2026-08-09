@@ -164,9 +164,10 @@ export default function Search() {
                   >
                     <div className="w-16 h-24 bg-surface-variant flex-shrink-0 relative overflow-hidden rounded">
                       <img
-                        className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply transition-all duration-500"
+                        className="blur-up absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply transition-all duration-500"
                         src={anime.coverImage.large || anime.coverImage.extraLarge}
                         alt={anime.title.romaji || anime.title.english}
+                        onLoad={(e) => e.currentTarget.classList.add('loaded')}
                       />
                     </div>
                     <div className="flex flex-col justify-center gap-1 overflow-hidden">

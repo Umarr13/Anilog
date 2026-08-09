@@ -29,6 +29,7 @@ export default function AnimeDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [saveFlash, setSaveFlash] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
@@ -83,12 +84,25 @@ export default function AnimeDetails() {
       updatedAt: Date.now()
     });
 
-    showToast(`Added to ${status.replace('_', ' ')}`, {
-      action: {
-        label: 'Undo',
-        onClick: () => db.anime.delete(anilistData.id),
-      },
-    });
+    if (status === 'plan_to_watch') {
+      showToast(`Added to Plan to Watch`, {
+        action: {
+          label: 'Start Now',
+          onClick: () => {
+             db.anime.update(anilistData.id, { status: 'watching', currentEpisode: 1, updatedAt: Date.now() });
+             Haptics.impact({ style: ImpactStyle.Heavy });
+          }
+        },
+      });
+    } else {
+      showToast(`Added to ${status.replace('_', ' ')}`, {
+        action: {
+          label: 'Undo',
+          onClick: () => db.anime.delete(anilistData.id),
+        },
+      });
+      if (status === 'completed') triggerCelebration();
+    }
     
     Haptics.impact({ style: ImpactStyle.Heavy });
   };
@@ -104,6 +118,17 @@ export default function AnimeDetails() {
     await db.anime.update(animeId, { currentEpisode: newEp, updatedAt: Date.now() });
     flashSave();
     Haptics.impact({ style: ImpactStyle.Light });
+    
+    if (localEntry.episodes && newEp === localEntry.episodes && localEntry.status !== 'completed') {
+      await db.anime.update(animeId, { status: 'completed', updatedAt: Date.now() });
+      triggerCelebration();
+    }
+  };
+
+  const triggerCelebration = () => {
+    setShowCelebration(true);
+    Haptics.impact({ style: ImpactStyle.Heavy });
+    setTimeout(() => setShowCelebration(false), 2500);
   };
 
   // 3.2 — Optimistic score update
@@ -179,6 +204,31 @@ export default function AnimeDetails() {
   return (
     <SwipeBack>
       <div className="min-h-screen flex flex-col pb-32 relative bg-background text-on-surface antialiased">
+        {/* 4.30 Completion Celebration Animation */}
+        {showCelebration && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="absolute inset-0 bg-secondary/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.3 } }}
+            />
+            <motion.div
+              initial={{ scale: 0.5, y: 50, opacity: 0 }}
+              animate={{ scale: [1.2, 1], y: 0, opacity: 1, transition: { type: 'spring', bounce: 0.6 } }}
+              className="bg-surface-container-lowest text-primary p-8 rounded-3xl island-shadow flex flex-col items-center gap-4 z-10"
+            >
+              <span className="material-symbols-outlined filled text-6xl text-secondary">workspace_premium</span>
+              <h2 className="font-headline-xl">Completed!</h2>
+              <p className="font-body-md text-on-surface-variant">Congratulations on finishing the journey.</p>
+            </motion.div>
+          </motion.div>
+        )}
+        
         {/* Top App Bar & 4.39 Sticky Shrinking Header */}
         <header className="bg-background dark:bg-background docked full-width top-0 z-40 sticky">
           <div className="flex justify-between items-center w-full px-container-padding py-4 max-w-desktop-max-width mx-auto relative">
@@ -237,9 +287,10 @@ export default function AnimeDetails() {
                 style={{ scale: heroScale, opacity: heroOpacity }}
               >
                 <img 
-                  className="w-full h-full object-contain" 
+                  className="blur-up w-full h-full object-contain" 
                   src={displayImage} 
-                  alt={`${displayTitle} Cover`} 
+                  alt={`${displayTitle} Cover`}
+                  onLoad={(e) => e.currentTarget.classList.add('loaded')}
                 />
               </motion.div>
             </div>
@@ -336,7 +387,13 @@ export default function AnimeDetails() {
                     <select
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       value={userStatus}
-                      onChange={(e) => db.anime.update(animeId, { status: e.target.value as AnimeEntry['status'], updatedAt: Date.now() }).then(flashSave)}
+                      onChange={(e) => {
+                        const newStatus = e.target.value as AnimeEntry['status'];
+                        db.anime.update(animeId, { status: newStatus, updatedAt: Date.now() }).then(() => {
+                          flashSave();
+                          if (newStatus === 'completed') triggerCelebration();
+                        });
+                      }}
                     >
                       <option value="watching">Watching</option>
                       <option value="completed">Watched</option>
