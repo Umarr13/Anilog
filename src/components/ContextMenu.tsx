@@ -25,7 +25,6 @@ interface ContextMenuProps {
 // ── Component ──────────────────────────────────────────────────────────────────
 export default function ContextMenu({ children, items, disabled }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -34,17 +33,7 @@ export default function ContextMenu({ children, items, disabled }: ContextMenuPr
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
       if (disabled) return;
-      const clientX = e.clientX;
-      const clientY = e.clientY;
       longPressTimer.current = setTimeout(() => {
-        // Position the menu near the long-press point
-        if (containerRef.current) {
-          const rect = containerRef.current.getBoundingClientRect();
-          setPosition({
-            x: clientX - rect.left,
-            y: clientY - rect.top,
-          });
-        }
         setOpen(true);
       }, LONG_PRESS_MS);
     },
