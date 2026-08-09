@@ -6,9 +6,11 @@ interface TopAppBarProps {
 
 export default function TopAppBar({ activeTab }: TopAppBarProps) {
   return (
-    <header className="bg-background dark:bg-background docked full-width top-0 flex justify-between items-center w-full px-container-padding py-4 sticky z-30">
+    <header className="bg-background dark:bg-background docked full-width top-0 flex justify-between items-center w-full px-container-padding py-4 pt-[max(1rem,env(safe-area-inset-top))] sticky z-30">
       <div className="flex items-center gap-4">
-        <span className="material-symbols-outlined text-primary dark:text-on-primary-fixed cursor-pointer hover:opacity-80 transition-opacity">face</span>
+        <Link to="/dashboard">
+          <img src="/luffy_icon.png" alt="Anilog Logo" className="w-8 h-8 rounded-full border border-primary/20 object-cover cursor-pointer hover:opacity-80 transition-opacity" />
+        </Link>
         <h1 className="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-widest font-black text-primary dark:text-on-primary-fixed">ANILOG</h1>
       </div>
       <div className="hidden md:flex gap-8">

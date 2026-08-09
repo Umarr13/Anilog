@@ -45,7 +45,7 @@ query ($search: String, $page: Int, $perPage: Int) {
         large
       }
       bannerImage
-      description
+      description(asHtml: false)
       episodes
       status
       genres
@@ -75,7 +75,7 @@ query ($id: Int) {
       large
     }
     bannerImage
-    description
+    description(asHtml: false)
     episodes
     status
     genres
@@ -105,7 +105,7 @@ query ($page: Int, $perPage: Int) {
         large
       }
       bannerImage
-      description
+      description(asHtml: false)
       episodes
       status
       genres
