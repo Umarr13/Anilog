@@ -17,6 +17,7 @@ import SaveIndicator from '../components/SaveIndicator';
 import Skeleton from '../components/Skeleton';
 import { useToast } from '../components/Toast';
 import { transitions, variants } from '../hooks/useMotion';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 export default function AnimeDetails() {
   const navigate = useNavigate();
@@ -83,6 +84,8 @@ export default function AnimeDetails() {
         onClick: () => db.anime.delete(anilistData.id),
       },
     });
+    
+    Haptics.impact({ style: ImpactStyle.Heavy });
   };
 
   // 3.2 — Optimistic episode update
@@ -95,6 +98,7 @@ export default function AnimeDetails() {
     // Optimistic: DB write happens, LiveQuery auto-updates the UI
     await db.anime.update(animeId, { currentEpisode: newEp, updatedAt: Date.now() });
     flashSave();
+    Haptics.impact({ style: ImpactStyle.Light });
   };
 
   // 3.2 — Optimistic score update
@@ -102,6 +106,7 @@ export default function AnimeDetails() {
     if (!localEntry) return;
     await db.anime.update(animeId, { score, updatedAt: Date.now() });
     flashSave();
+    Haptics.impact({ style: ImpactStyle.Medium });
   };
 
   // 3.6 — Skeleton while loading
@@ -163,6 +168,9 @@ export default function AnimeDetails() {
   const userProgress = localEntry?.currentEpisode || 0;
   const userScore = localEntry?.score || 0;
 
+  const scoreNum = parseFloat(displayAvgScore);
+  const scoreColor = isNaN(scoreNum) ? 'text-on-surface-variant' : scoreNum >= 8 ? 'text-green-500' : scoreNum >= 5 ? 'text-amber-500' : 'text-surface-variant';
+
   return (
     <SwipeBack>
       <div className="min-h-screen flex flex-col pb-32 relative bg-background text-on-surface antialiased">
@@ -216,9 +224,9 @@ export default function AnimeDetails() {
               <div className="flex gap-12 py-6 border-y border-outline-variant/20">
                 <div>
                   <span className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Score</span>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-secondary filled">star</span>
-                    <span className="font-headline-lg text-headline-lg">{displayAvgScore}</span>
+                  <div className={`flex items-center gap-2 ${scoreColor} bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant/10 inline-flex`}>
+                    <span className="material-symbols-outlined filled text-[20px]">star</span>
+                    <span className="font-headline-md text-headline-md">{displayAvgScore}</span>
                   </div>
                 </div>
                 <div>
@@ -253,6 +261,13 @@ export default function AnimeDetails() {
                   >
                     Plan to Watch
                   </button>
+                  <button 
+                    onClick={() => handleAddToCollection('completed')}
+                    className="bg-surface-container-high text-on-surface font-label-md py-3 px-6 rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center justify-center"
+                    title="Mark as Watched"
+                  >
+                    <span className="material-symbols-outlined filled">done</span>
+                  </button>
                 </motion.div>
               )}
             </div>
@@ -273,9 +288,20 @@ export default function AnimeDetails() {
                     {userStatus?.replace('_', ' ')}
                   </span>
                   <SaveIndicator visible={saveFlash} />
-                  <button className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-tint transition-colors">
-                    <span className="material-symbols-outlined">edit</span>
-                  </button>
+                  <div className="relative">
+                    <select
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      value={userStatus}
+                      onChange={(e) => db.anime.update(animeId, { status: e.target.value as AnimeEntry['status'], updatedAt: Date.now() }).then(flashSave)}
+                    >
+                      <option value="watching">Watching</option>
+                      <option value="completed">Watched</option>
+                      <option value="plan_to_watch">Plan to Watch</option>
+                    </select>
+                    <button className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-tint transition-colors pointer-events-none">
+                      <span className="material-symbols-outlined">edit</span>
+                    </button>
+                  </div>
                 </div>
               </div>
               
@@ -283,41 +309,52 @@ export default function AnimeDetails() {
                 {/* Progress */}
                 <div className="flex flex-col gap-2">
                   <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Progress</label>
-                  <div className="flex items-center gap-4">
-                    <span className="font-headline-lg text-headline-lg">{userProgress}</span>
-                    <span className="font-body-lg text-body-lg text-on-surface-variant">/ {displayEpisodes || '?'}</span>
-                    <div className="flex gap-2 ml-auto">
-                      <button 
-                        onClick={() => handleUpdateProgress(-1)} 
-                        className="w-12 h-12 rounded-full border border-primary flex items-center justify-center hover:bg-surface-container-low transition-colors active:scale-90"
-                      >
-                        <span className="material-symbols-outlined text-primary">remove</span>
-                      </button>
-                      <button 
-                        onClick={() => handleUpdateProgress(1)} 
-                        className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-surface-tint transition-colors active:scale-90"
-                      >
-                        <span className="material-symbols-outlined">add</span>
-                      </button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-4">
+                      <span className="font-headline-lg text-headline-lg">{userProgress}</span>
+                      <span className="font-body-lg text-body-lg text-on-surface-variant">/ {displayEpisodes || '?'}</span>
+                      <div className="flex gap-2 ml-auto">
+                        <button 
+                          onClick={() => handleUpdateProgress(-1)} 
+                          className="w-12 h-12 rounded-full border border-primary flex items-center justify-center hover:bg-surface-container-low transition-colors active:scale-90"
+                        >
+                          <span className="material-symbols-outlined text-primary">remove</span>
+                        </button>
+                        <button 
+                          onClick={() => handleUpdateProgress(1)} 
+                          className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-surface-tint transition-colors active:scale-90"
+                        >
+                          <span className="material-symbols-outlined">add</span>
+                        </button>
+                      </div>
                     </div>
+                    {/* Slider / Squiral Bar */}
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max={displayEpisodes || userProgress + 50} 
+                      value={userProgress}
+                      onChange={(e) => handleUpdateProgress(parseInt(e.target.value, 10) - userProgress)}
+                      className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary"
+                    />
                   </div>
                 </div>
                 
-                {/* 3.7 — Bigger star tap targets (44×44px) */}
+                {/* 3.7 — Bigger star tap targets (44×44px) - Now out of 5 */}
                 <div className="flex flex-col gap-2">
                   <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">My Rating</label>
                   <div className="flex items-center gap-1 h-full">
-                    {[2, 4, 6, 8, 10].map(starValue => (
+                    {[1, 2, 3, 4, 5].map(starValue => (
                       <button 
                         key={starValue} 
                         onClick={() => handleUpdateScore(starValue)}
                         className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors active:scale-90"
-                        aria-label={`Rate ${starValue} out of 10`}
+                        aria-label={`Rate ${starValue} out of 5`}
                       >
                         <span className={`material-symbols-outlined text-[28px] transition-colors ${userScore >= starValue ? 'filled text-secondary' : 'text-surface-variant'}`}>star</span>
                       </button>
                     ))}
-                    <span className="ml-3 font-body-lg text-body-lg">{userScore} / 10</span>
+                    <span className="ml-3 font-body-lg text-body-lg">{userScore} / 5</span>
                   </div>
                 </div>
               </div>
