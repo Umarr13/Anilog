@@ -17,8 +17,8 @@ export default function Dashboard() {
   const completed = allAnime.filter(a => a.status === 'completed');
   const planToWatch = allAnime.filter(a => a.status === 'plan_to_watch');
   
-  // Get the most recently updated "watching" anime
-  const currentFocus = watching.sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  // Get the 4 most recently updated "watching" anime
+  const recentFocus = watching.sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 4);
   
   const scoredAnime = allAnime.filter(a => a.score > 0);
   const avgScore = scoredAnime.length > 0 
@@ -34,52 +34,62 @@ export default function Dashboard() {
 
   return (
     <Layout activeTab="dashboard">
-      {/* Current Focus Island */}
-      {currentFocus ? (
+      {/* 4.29 Time-of-Day Greeting */}
+      <motion.div 
+        className="mb-6 mt-2"
+        variants={variants.fadeSlideUp}
+        initial="initial"
+        animate="animate"
+      >
+        <h2 className="font-headline-md text-on-surface-variant">
+          {new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening'},
+        </h2>
+        <h1 className="font-headline-xl text-primary mt-1">Your Anime Journey</h1>
+      </motion.div>
+
+      {/* Current Focus Bento Grid */}
+      {recentFocus.length > 0 ? (
         <motion.section
-          className="bg-surface-container-lowest rounded-2xl island-shadow p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center mb-8"
-          variants={variants.fadeSlideUp}
+          className="grid grid-cols-2 gap-4 mb-8"
+          variants={variants.staggerContainer}
           initial="initial"
           animate="animate"
-          transition={transitions.page}
         >
-          {/* Image Area */}
-          <div className="w-full md:w-1/2 aspect-square md:aspect-auto md:h-80 rounded-xl overflow-hidden bg-surface-container relative flex-shrink-0 cursor-pointer">
-            <Link to={`/anime/${currentFocus.id}`}>
-              <img
-                alt="Current Focus Artwork"
-                className="w-full h-full object-cover object-top mix-blend-multiply transition-transform hover:scale-105 duration-700"
-                src={currentFocus.image}
-              />
-              <div className="absolute inset-0 border border-outline-variant/10 rounded-xl pointer-events-none"></div>
-            </Link>
-          </div>
-
-          {/* Content Area */}
-          <div className="w-full md:w-1/2 flex flex-col items-start">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="px-3 py-1 bg-surface-container text-primary font-label-sm text-label-sm rounded-[4px] uppercase tracking-wider">Currently Watching</span>
-            </div>
-            <h3 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-2 hover:underline cursor-pointer">
-              <Link to={`/anime/${currentFocus.id}`}>{currentFocus.title}</Link>
-            </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant mb-4 max-w-md">
-              Progress: {currentFocus.currentEpisode} / {currentFocus.episodes || '?'}
-            </p>
-            {/* Progress bar */}
-            <div className="w-full max-w-xs h-2 bg-surface-container-high rounded-full overflow-hidden mb-6">
-              <motion.div
-                className="h-full bg-secondary rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${currentFocus.episodes ? (currentFocus.currentEpisode / currentFocus.episodes) * 100 : 50}%` }}
-                transition={{ ...transitions.default, delay: 0.3 }}
-              />
-            </div>
-            <Link to={`/anime/${currentFocus.id}`} className="bg-primary text-on-primary font-label-md text-label-md py-4 px-8 rounded-lg hover:opacity-90 transition-opacity active:scale-95 w-full md:w-auto flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined filled">play_arrow</span>
-              Resume
-            </Link>
-          </div>
+          {recentFocus.map((anime, index) => (
+            <motion.div
+              key={anime.id}
+              className="bg-surface-container-lowest rounded-2xl island-shadow p-3 flex flex-col relative overflow-hidden group"
+              variants={variants.staggerChild}
+              transition={{ ...transitions.default, delay: index * 0.1 }}
+            >
+              <Link to={`/anime/${anime.id}`} className="block h-full flex flex-col">
+                <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container relative mb-3">
+                  <img
+                    alt={anime.title}
+                    className="w-full h-full object-cover object-top mix-blend-multiply transition-transform group-hover:scale-105 duration-700"
+                    src={anime.image}
+                  />
+                  <div className="absolute inset-0 border border-outline-variant/10 rounded-xl pointer-events-none"></div>
+                  
+                  {/* Gradient Overlay for Text */}
+                  <div className="absolute inset-x-0 bottom-0 p-3 pt-8 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end">
+                    <h3 className="text-white font-headline-sm text-sm truncate w-full">{anime.title}</h3>
+                    <p className="text-white/80 font-body-sm text-xs">Ep {anime.currentEpisode} / {anime.episodes || '?'}</p>
+                  </div>
+                </div>
+                
+                {/* Progress bar at bottom */}
+                <div className="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden mt-auto">
+                  <motion.div
+                    className="h-full bg-secondary rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${anime.episodes ? (anime.currentEpisode / anime.episodes) * 100 : 50}%` }}
+                    transition={{ ...transitions.default, delay: 0.3 + (index * 0.1) }}
+                  />
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </motion.section>
       ) : (
         /* 3.5 — Contextual empty state */
@@ -99,6 +109,29 @@ export default function Dashboard() {
           </Link>
         </motion.section>
       )}
+
+      {/* Quick Actions (Phase 4) */}
+      <motion.section 
+        className="flex gap-4 mb-8 overflow-x-auto pb-2 snap-x"
+        variants={variants.fadeSlideUp}
+        initial="initial"
+        animate="animate"
+      >
+        <Link to="/calendar" className="snap-start flex-shrink-0 w-[200px] bg-secondary text-on-secondary rounded-2xl island-shadow p-4 flex flex-col justify-between hover:-translate-y-1 transition-transform">
+          <span className="material-symbols-outlined text-3xl mb-4">calendar_month</span>
+          <div>
+            <h3 className="font-headline-sm">Airing Calendar</h3>
+            <p className="font-body-sm text-on-secondary/80 mt-1">What's out today</p>
+          </div>
+        </Link>
+        <Link to="/recommend" className="snap-start flex-shrink-0 w-[200px] bg-surface-container-high text-on-surface rounded-2xl island-shadow p-4 flex flex-col justify-between hover:-translate-y-1 transition-transform border border-outline-variant/30">
+          <span className="material-symbols-outlined text-3xl mb-4 text-primary">psychology</span>
+          <div>
+            <h3 className="font-headline-sm text-primary">Suggest an Anime</h3>
+            <p className="font-body-sm text-on-surface-variant mt-1">Mood-based pick</p>
+          </div>
+        </Link>
+      </motion.section>
 
       {/* Quick Stats Bento — 3.9 staggered */}
       <motion.section
