@@ -8,7 +8,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { getAnimeDetails, type AniListAnime } from '../api/anilist';
 import { db, type AnimeEntry } from '../data/db';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -29,6 +29,11 @@ export default function AnimeDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [saveFlash, setSaveFlash] = useState(false);
+
+  const { scrollYProgress } = useScroll();
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.5]);
 
   // 1. Check local DB
   const localEntry = useLiveQuery(() => db.anime.get(animeId), [animeId]);
@@ -174,20 +179,43 @@ export default function AnimeDetails() {
   return (
     <SwipeBack>
       <div className="min-h-screen flex flex-col pb-32 relative bg-background text-on-surface antialiased">
-        {/* Top App Bar */}
+        {/* Top App Bar & 4.39 Sticky Shrinking Header */}
         <header className="bg-background dark:bg-background docked full-width top-0 z-40 sticky">
-          <div className="flex justify-between items-center w-full px-container-padding py-4 max-w-desktop-max-width mx-auto">
+          <div className="flex justify-between items-center w-full px-container-padding py-4 max-w-desktop-max-width mx-auto relative">
             <button 
-              className="text-on-surface-variant hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-container"
+              className="text-on-surface-variant hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-container relative z-10"
               onClick={() => navigate(-1)}
             >
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-widest font-black text-primary dark:text-on-primary-fixed">ANILOG</h1>
-            <button className="text-on-surface-variant hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-container">
+            
+            <motion.h1 
+              className="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-widest font-black text-primary dark:text-on-primary-fixed absolute left-0 right-0 text-center"
+              style={{ opacity: useTransform(headerOpacity, v => 1 - v) }}
+            >
+              ANILOG
+            </motion.h1>
+
+            <motion.div 
+              className="absolute left-16 right-16 flex items-center justify-center gap-2 overflow-hidden"
+              style={{ opacity: headerOpacity }}
+            >
+               <h1 className="font-headline-sm text-sm truncate">{displayTitle}</h1>
+               <div className="flex items-center gap-1 bg-surface-container-low px-2 py-0.5 rounded-full">
+                 <span className="material-symbols-outlined filled text-[14px] text-secondary">star</span>
+                 <span className="font-label-sm text-xs">{displayAvgScore}</span>
+               </div>
+            </motion.div>
+
+            <button className="text-on-surface-variant hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-container relative z-10">
               <span className="material-symbols-outlined">more_vert</span>
             </button>
           </div>
+          {/* 4.19 Scroll Progress Indicator */}
+          <motion.div 
+            className="absolute bottom-0 left-0 h-[2px] bg-secondary origin-left" 
+            style={{ width: '100%', scaleX: scrollYProgress }} 
+          />
         </header>
 
         <motion.main
@@ -200,11 +228,13 @@ export default function AnimeDetails() {
           {/* Hero Section */}
           <section className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             <div className="w-full md:w-1/2 flex justify-center">
+              {/* 4.11 Anime Details Scroll Parallax */}
               <motion.div 
-                className="bg-surface-container-lowest rounded-xl p-8 island-shadow w-full max-w-sm aspect-[3/4] flex items-center justify-center relative overflow-hidden"
+                className="bg-surface-container-lowest rounded-xl p-8 island-shadow w-full max-w-sm aspect-[3/4] flex items-center justify-center relative overflow-hidden origin-top"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ ...transitions.default, delay: 0.1 }}
+                style={{ scale: heroScale, opacity: heroOpacity }}
               >
                 <img 
                   className="w-full h-full object-contain" 
@@ -215,8 +245,22 @@ export default function AnimeDetails() {
             </div>
             
             <div className="w-full md:w-1/2 flex flex-col gap-6">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {/* 4.40 Tappable Genre Tag Chips */}
+                {anilistData?.genres?.map(genre => (
+                  <button 
+                    key={genre} 
+                    onClick={() => {
+                      Haptics.impact({ style: ImpactStyle.Light });
+                      navigate(`/search?genre=${genre}`);
+                    }}
+                    className="inline-block px-3 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded-full hover:bg-surface-container transition-colors active:scale-95"
+                  >
+                    {genre}
+                  </button>
+                )) || <span className="inline-block px-3 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded mb-3">TV Series</span>}
+              </div>
               <div>
-                <span className="inline-block px-3 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded mb-3">TV Series</span>
                 <h2 className="font-headline-xl text-headline-xl text-primary">{displayTitle}</h2>
                 <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">{displayRomaji}</p>
               </div>
