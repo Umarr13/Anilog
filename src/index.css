@@ -23,6 +23,12 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* Phase 4.21 - Marquee for long titles */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 @layer utilities {
@@ -69,5 +75,11 @@
   }
   .press-feedback:active {
     transform: scale(0.95);
+  }
+
+  .animate-marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 15s linear infinite;
   }
 }

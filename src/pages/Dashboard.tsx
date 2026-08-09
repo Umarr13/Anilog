@@ -72,8 +72,10 @@ export default function Dashboard() {
                   <div className="absolute inset-0 border border-outline-variant/10 rounded-xl pointer-events-none"></div>
                   
                   {/* Gradient Overlay for Text */}
-                  <div className="absolute inset-x-0 bottom-0 p-3 pt-8 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end">
-                    <h3 className="text-white font-headline-sm text-sm truncate w-full">{anime.title}</h3>
+                  <div className="absolute inset-x-0 bottom-0 p-3 pt-8 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end overflow-hidden">
+                    <div className="w-full relative">
+                      <h3 className="text-white font-headline-sm text-sm hover:animate-marquee whitespace-nowrap">{anime.title}</h3>
+                    </div>
                     <p className="text-white/80 font-body-sm text-xs">Ep {anime.currentEpisode} / {anime.episodes || '?'}</p>
                   </div>
                 </div>
