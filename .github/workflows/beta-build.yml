@@ -49,10 +49,14 @@ jobs:
           name: anilog-beta-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Get Version
+        id: pkg
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Create Pre-release
         uses: softprops/action-gh-release@v1
         with:
-          name: "Beta Build: ${{ github.sha }}"
-          tag_name: "beta-${{ github.run_number }}"
+          name: "Anilog v${{ steps.pkg.outputs.version }}"
+          tag_name: "v${{ steps.pkg.outputs.version }}"
           prerelease: true
           files: android/app/build/outputs/apk/debug/app-debug.apk
