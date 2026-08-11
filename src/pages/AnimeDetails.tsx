@@ -35,6 +35,7 @@ export default function AnimeDetails() {
   const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.5]);
+  const headerOpacityInverse = useTransform(headerOpacity, v => 1 - v);
 
   // 1. Check local DB
   const localEntry = useLiveQuery(() => db.anime.get(animeId), [animeId]);
@@ -241,7 +242,7 @@ export default function AnimeDetails() {
             
             <motion.h1 
               className="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-widest font-black text-primary dark:text-on-primary-fixed absolute left-0 right-0 text-center"
-              style={{ opacity: useTransform(headerOpacity, v => 1 - v) }}
+              style={{ opacity: headerOpacityInverse }}
             >
               ANILOG
             </motion.h1>
