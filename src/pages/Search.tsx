@@ -65,10 +65,15 @@ export default function Search() {
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
 
+  // Bug Fix: Scroll to top on mount so search input is always visible (even on back navigation)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Layout activeTab="search">
       {/* Search Section */}
-      <section className="flex flex-col gap-stack-xs w-full max-w-2xl mx-auto">
+      <section className="flex flex-col gap-stack-xs w-full max-w-2xl mx-auto relative z-20">
         <label className="font-label-caps text-label-caps text-secondary uppercase tracking-[0.15em]" htmlFor="search-input">Search Titles</label>
         <div className="relative flex items-center">
           <span className="material-symbols-outlined absolute left-0 text-secondary pointer-events-none">search</span>
@@ -92,31 +97,31 @@ export default function Search() {
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
           )}
-        </div>
 
-        {/* 4.12 Recent Searches */}
-        {isFocused && query.trim() === '' && recentSearches.length > 0 && (
-          <motion.div 
-            className="absolute top-16 left-0 right-0 bg-surface-container-low rounded-xl island-shadow z-20 flex flex-col p-2 border border-outline-variant/10"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex justify-between items-center px-4 py-2 text-on-surface-variant">
-              <span className="font-label-sm uppercase tracking-wider">Recent Searches</span>
-              <button onClick={() => { setRecentSearches([]); localStorage.removeItem('anilog_recent_searches'); }} className="text-xs hover:text-primary">Clear</button>
-            </div>
-            {recentSearches.map(term => (
-              <button 
-                key={term} 
-                onClick={() => setQuery(term)} 
-                className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container rounded-lg text-left transition-colors"
-              >
-                <span className="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
-                <span className="font-body-md text-primary">{term}</span>
-              </button>
-            ))}
-          </motion.div>
-        )}
+          {/* 4.12 Recent Searches */}
+          {isFocused && query.trim() === '' && recentSearches.length > 0 && (
+            <motion.div 
+              className="absolute top-full mt-2 left-0 right-0 bg-surface-container-low rounded-xl island-shadow flex flex-col p-2 border border-outline-variant/10 overflow-hidden"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="flex justify-between items-center px-4 py-2 text-on-surface-variant">
+                <span className="font-label-sm uppercase tracking-wider">Recent Searches</span>
+                <button onClick={() => { setRecentSearches([]); localStorage.removeItem('anilog_recent_searches'); }} className="text-xs hover:text-primary">Clear</button>
+              </div>
+              {recentSearches.map(term => (
+                <button 
+                  key={term} 
+                  onClick={() => setQuery(term)} 
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container rounded-lg text-left transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+                  <span className="font-body-md text-primary">{term}</span>
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </div>
       </section>
 
       {/* Results Section */}
