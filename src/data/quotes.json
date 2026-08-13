@@ -1,0 +1,38 @@
+[
+  {
+    "quote": "If you don't take risks, you can't create a future.",
+    "character": "Monkey D. Luffy",
+    "anime": "One Piece",
+    "tags": ["motivation", "future"]
+  },
+  {
+    "quote": "People, who can't throw something important away, can never hope to change anything.",
+    "character": "Armin Arlert",
+    "anime": "Attack on Titan",
+    "tags": ["change", "sacrifice"]
+  },
+  {
+    "quote": "A lesson without pain is meaningless.",
+    "character": "Edward Elric",
+    "anime": "Fullmetal Alchemist: Brotherhood",
+    "tags": ["pain", "learning"]
+  },
+  {
+    "quote": "Fools who don't respect the past are likely to repeat it.",
+    "character": "Nico Robin",
+    "anime": "One Piece",
+    "tags": ["history", "wisdom"]
+  },
+  {
+    "quote": "If you don't like your destiny, don't accept it. Instead, have the courage to change it the way you want it to be.",
+    "character": "Naruto Uzumaki",
+    "anime": "Naruto",
+    "tags": ["destiny", "courage"]
+  },
+  {
+    "quote": "A dropout will beat a genius through hard work.",
+    "character": "Rock Lee",
+    "anime": "Naruto",
+    "tags": ["hard work", "determination"]
+  }
+]

@@ -63,7 +63,7 @@ export default function Search() {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+  }, [query, recentSearches]);
 
   // Bug Fix: Scroll to top on mount so search input is always visible (even on back navigation)
   useEffect(() => {

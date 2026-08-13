@@ -9,6 +9,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'framer-motion';
 import { db } from '../data/db';
 import { transitions, variants } from '../hooks/useMotion';
+import { getDashboardPriorityCard } from '../lib/dashboardPriority';
 
 export default function Dashboard() {
   const allAnime = useLiveQuery(() => db.anime.toArray()) || [];
@@ -32,6 +33,8 @@ export default function Dashboard() {
     { label: 'Avg Score', value: avgScore, isScore: true, delay: 0.15 },
   ];
 
+  const priorityCard = getDashboardPriorityCard(allAnime);
+
   return (
     <Layout activeTab="dashboard">
       {/* 4.29 Time-of-Day Greeting */}
@@ -46,6 +49,61 @@ export default function Dashboard() {
         </h2>
         <h1 className="font-headline-xl text-primary mt-1">Your Anime Journey</h1>
       </motion.div>
+
+      {/* Adaptive "Right Now" Dashboard Card */}
+      <motion.section
+        className="mb-8"
+        variants={variants.fadeSlideUp}
+        initial="initial"
+        animate="animate"
+      >
+        {priorityCard.type === 'quote' ? (
+          priorityCard.anime ? (
+            <Link to={`/anime/${priorityCard.anime.id}`} className="block w-full">
+              <div className="bg-surface-container-high rounded-3xl island-shadow p-6 relative overflow-hidden group">
+                <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-primary to-secondary mix-blend-overlay"></div>
+                <h3 className="font-headline-sm text-secondary mb-2 uppercase tracking-widest text-xs">A moment of reflection</h3>
+                <p className="font-headline-md text-on-surface mb-4 leading-relaxed">"{priorityCard.quote?.quote}"</p>
+                <div className="flex items-center gap-3">
+                  {priorityCard.anime.image && (
+                    <img src={priorityCard.anime.image} alt={priorityCard.anime.title} className="w-8 h-8 rounded-full object-cover" />
+                  )}
+                  <p className="font-body-sm text-on-surface-variant">— {priorityCard.quote?.character}, <span className="italic">{priorityCard.quote?.anime}</span></p>
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="bg-surface-container-high rounded-3xl island-shadow p-6 relative overflow-hidden group">
+              <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-primary to-secondary mix-blend-overlay"></div>
+              <h3 className="font-headline-sm text-secondary mb-2 uppercase tracking-widest text-xs">A moment of reflection</h3>
+              <p className="font-headline-md text-on-surface mb-4 leading-relaxed">"{priorityCard.quote?.quote}"</p>
+              <p className="font-body-sm text-on-surface-variant">— {priorityCard.quote?.character}, <span className="italic">{priorityCard.quote?.anime}</span></p>
+            </div>
+          )
+        ) : priorityCard.anime ? (
+          <Link to={`/anime/${priorityCard.anime.id}`} className="block w-full">
+            <div className="bg-surface-container-lowest rounded-3xl island-shadow overflow-hidden group flex border border-outline-variant/30 h-36">
+              <div className="w-1/3 h-full relative">
+                <img src={priorityCard.anime.image} alt={priorityCard.anime.title} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="w-2/3 p-5 flex flex-col justify-center">
+                <h3 className="font-headline-sm text-primary mb-1 uppercase tracking-widest text-[10px]">
+                  {priorityCard.type === 'finish_soon' ? 'Almost Done' : priorityCard.type === 'new_episode' ? 'New Episode' : priorityCard.type === 'resume_watching' ? 'Pick Back Up' : 'Suggested for You'}
+                </h3>
+                <h2 className="font-headline-md text-on-surface line-clamp-1 mb-2">{priorityCard.anime.title}</h2>
+                <p className="font-body-sm text-on-surface-variant line-clamp-2">{priorityCard.message}</p>
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <div className="bg-surface-container-lowest rounded-3xl island-shadow p-6 flex flex-col items-center text-center">
+             <span className="material-symbols-outlined text-4xl text-secondary mb-3">explore</span>
+             <h3 className="font-headline-sm text-primary mb-1">Time to Explore</h3>
+             <p className="font-body-sm text-on-surface-variant">{priorityCard.message}</p>
+             <Link to="/search" className="mt-4 px-6 py-2 bg-primary text-on-primary rounded-full font-label-md">Search</Link>
+          </div>
+        )}
+      </motion.section>
 
       {/* Current Focus Bento Grid */}
       {recentFocus.length > 0 ? (

@@ -48,7 +48,7 @@ export default function SeasonalCalendar() {
           .sort((a: any, b: any) => a.nextAiringEpisode.airingAt - b.nextAiringEpisode.airingAt);
           
         setAiringAnime(schedule);
-      } catch (_err) {
+      } catch {
         setError('Failed to load schedule');
       } finally {
         setLoading(false);
