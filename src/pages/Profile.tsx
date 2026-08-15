@@ -2,17 +2,18 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type AnimeEntry } from '../data/db.ts';
 import Layout from '../components/Layout.tsx';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { useToast } from '../components/Toast';
 
 const COLORS = ['#D1C4E9', '#B39DDB', '#9575CD', '#7E57C2', '#673AB7', '#5E35B1', '#512DA8'];
 
 export default function Profile() {
-  const allAnime = useLiveQuery(() => db.anime.toArray()) || [];
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const stats = useMemo(() => {
+
+  // Compute stats directly inside useLiveQuery to avoid unstable array ref in useMemo deps
+  const stats = useLiveQuery(async () => {
+    const allAnime = await db.anime.toArray();
     let totalEpisodes = 0;
     let totalScore = 0;
     let scoredCount = 0;
@@ -44,8 +45,8 @@ export default function Profile() {
       .slice(0, 5)
       .map(([name, value]) => ({ name, value }));
 
-    return { totalEpisodes, averageScore, topGenres, statusCounts };
-  }, [allAnime]);
+    return { totalEpisodes, averageScore, topGenres, statusCounts, totalAnime: allAnime.length };
+  });
 
   const handleExport = async () => {
     try {
@@ -58,9 +59,9 @@ export default function Profile() {
       a.download = `anilog-backup-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('Data exported successfully', );
+      showToast('Data exported successfully');
     } catch {
-      showToast('Failed to export data', );
+      showToast('Failed to export data');
     }
   };
 
@@ -74,9 +75,9 @@ export default function Profile() {
       if (!Array.isArray(data)) throw new Error('Invalid backup file');
       
       await db.anime.bulkPut(data);
-      showToast('Data imported successfully', );
+      showToast('Data imported successfully');
     } catch {
-      showToast('Failed to import data', );
+      showToast('Failed to import data');
     }
     
     if (fileInputRef.current) {
@@ -94,14 +95,14 @@ export default function Profile() {
 
         {/* Top Stats Cards */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon="play_circle" label="Episodes Watched" value={stats.totalEpisodes} />
-          <StatCard icon="star" label="Avg Score" value={stats.averageScore} />
-          <StatCard icon="done_all" label="Completed" value={stats.statusCounts.completed} />
-          <StatCard icon="schedule" label="Watching" value={stats.statusCounts.watching} />
+          <StatCard icon="play_circle" label="Episodes Watched" value={stats?.totalEpisodes ?? 0} />
+          <StatCard icon="star" label="Avg Score" value={stats?.averageScore ?? '0.0'} />
+          <StatCard icon="done_all" label="Completed" value={stats?.statusCounts.completed ?? 0} />
+          <StatCard icon="schedule" label="Watching" value={stats?.statusCounts.watching ?? 0} />
         </section>
 
         {/* Charts Section */}
-        {allAnime.length > 0 ? (
+        {(stats?.totalAnime ?? 0) > 0 ? (
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-surface-variant rounded-[32px] p-6 shadow-sm border border-surface flex flex-col h-80">
               <h3 className="font-title-md text-title-md text-on-surface mb-4">Top Genres</h3>
@@ -109,7 +110,7 @@ export default function Profile() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={stats.topGenres}
+                      data={stats?.topGenres}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -118,7 +119,7 @@ export default function Profile() {
                       dataKey="value"
                       stroke="none"
                     >
-                      {stats.topGenres.map((_, index) => (
+                      {stats?.topGenres.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -134,9 +135,9 @@ export default function Profile() {
             <div className="bg-surface-variant rounded-[32px] p-6 shadow-sm border border-surface flex flex-col h-80">
                 <h3 className="font-title-md text-title-md text-on-surface mb-4">Library Status</h3>
                 <div className="flex flex-col gap-4 flex-1 justify-center">
-                    <StatusRow label="Watching" count={stats.statusCounts.watching} total={allAnime.length} color="bg-primary" />
-                    <StatusRow label="Completed" count={stats.statusCounts.completed} total={allAnime.length} color="bg-secondary" />
-                    <StatusRow label="Plan to Watch" count={stats.statusCounts.plan_to_watch} total={allAnime.length} color="bg-tertiary" />
+                    <StatusRow label="Watching" count={stats?.statusCounts.watching ?? 0} total={stats?.totalAnime ?? 0} color="bg-primary" />
+                    <StatusRow label="Completed" count={stats?.statusCounts.completed ?? 0} total={stats?.totalAnime ?? 0} color="bg-secondary" />
+                    <StatusRow label="Plan to Watch" count={stats?.statusCounts.plan_to_watch ?? 0} total={stats?.totalAnime ?? 0} color="bg-tertiary" />
                 </div>
             </div>
           </section>
