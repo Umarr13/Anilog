@@ -6,8 +6,17 @@ import SwipeBack from '../components/SwipeBack';
 import Skeleton from '../components/Skeleton';
 import { variants } from '../hooks/useMotion';
 import { ANILIST_API_URL } from '../api/anilist';
+import { apiCache, TTL } from '../lib/apiCache';
 import { db } from '../data/db';
 import { useLiveQuery } from 'dexie-react-hooks';
+
+interface AiringAnime {
+  id: number;
+  title: { romaji: string; english: string };
+  coverImage: { large: string };
+  nextAiringEpisode: { airingAt: number; episode: number };
+  genres: string[];
+}
 
 const calendarQuery = `
 query {
@@ -27,13 +36,22 @@ query {
 `;
 
 export default function SeasonalCalendar() {
-  const [airingAnime, setAiringAnime] = useState<any[]>([]);
+  const [airingAnime, setAiringAnime] = useState<AiringAnime[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const collection = useLiveQuery(() => db.anime.toArray()) || [];
 
   useEffect(() => {
     async function fetchCalendar() {
+      // Phase 7: Check cache first
+      const cacheKey = 'calendar_schedule';
+      const cached = apiCache.get<AiringAnime[]>(cacheKey);
+      if (cached) {
+        setAiringAnime(cached);
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(ANILIST_API_URL, {
           method: 'POST',
@@ -43,11 +61,12 @@ export default function SeasonalCalendar() {
         const data = await res.json();
         
         // Filter out those without next airing episode and sort by airing time
-        const schedule = data.data.Page.media
-          .filter((a: any) => a.nextAiringEpisode)
-          .sort((a: any, b: any) => a.nextAiringEpisode.airingAt - b.nextAiringEpisode.airingAt);
+        const schedule: AiringAnime[] = data.data.Page.media
+          .filter((a: AiringAnime) => a.nextAiringEpisode)
+          .sort((a: AiringAnime, b: AiringAnime) => a.nextAiringEpisode.airingAt - b.nextAiringEpisode.airingAt);
           
         setAiringAnime(schedule);
+        apiCache.set(cacheKey, schedule, TTL.CALENDAR);
       } catch {
         setError('Failed to load schedule');
       } finally {
@@ -60,13 +79,13 @@ export default function SeasonalCalendar() {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   
   // Group by day of week
-  const groupedByDay = airingAnime.reduce((acc: Record<string, any[]>, anime: any) => {
+  const groupedByDay = airingAnime.reduce((acc: Record<string, AiringAnime[]>, anime: AiringAnime) => {
     const date = new Date(anime.nextAiringEpisode.airingAt * 1000);
     const day = daysOfWeek[date.getDay()];
     if (!acc[day]) acc[day] = [];
     acc[day].push(anime);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, AiringAnime[]>);
 
   // Reorder days starting from today
   const todayIndex = new Date().getDay();
@@ -117,7 +136,7 @@ export default function SeasonalCalendar() {
                   </div>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {animes.map((anime: any) => {
+                    {animes.map((anime: AiringAnime) => {
                       const date = new Date(anime.nextAiringEpisode.airingAt * 1000);
                       const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                       const isInCollection = collection.some(c => c.id === anime.id);

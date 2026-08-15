@@ -1,3 +1,5 @@
+import { apiCache, TTL } from '../lib/apiCache';
+
 export const ANILIST_API_URL = 'https://graphql.anilist.co';
 
 export interface AniListAnime {
@@ -122,11 +124,11 @@ query ($page: Int, $perPage: Int) {
 `;
 
 export async function searchAnime(query: string, page = 1, perPage = 12): Promise<AniListAnime[]> {
-  const variables = {
-    search: query,
-    page,
-    perPage
-  };
+  const cacheKey = `search_${query}_${page}_${perPage}`;
+  const cached = apiCache.get<AniListAnime[]>(cacheKey);
+  if (cached) return cached;
+
+  const variables = { search: query, page, perPage };
 
   const response = await fetch(ANILIST_API_URL, {
     method: 'POST',
@@ -134,10 +136,7 @@ export async function searchAnime(query: string, page = 1, perPage = 12): Promis
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({
-      query: searchQuery,
-      variables
-    })
+    body: JSON.stringify({ query: searchQuery, variables })
   });
 
   const data = await response.json();
@@ -145,14 +144,17 @@ export async function searchAnime(query: string, page = 1, perPage = 12): Promis
     throw new Error(data.errors[0].message);
   }
   
-  return data.data.Page.media;
+  const results = data.data.Page.media;
+  apiCache.set(cacheKey, results, TTL.SEARCH);
+  return results;
 }
 
 export async function getTrendingAnime(page = 1, perPage = 12): Promise<AniListAnime[]> {
-  const variables = {
-    page,
-    perPage
-  };
+  const cacheKey = `trending_${page}_${perPage}`;
+  const cached = apiCache.get<AniListAnime[]>(cacheKey);
+  if (cached) return cached;
+
+  const variables = { page, perPage };
 
   const response = await fetch(ANILIST_API_URL, {
     method: 'POST',
@@ -160,10 +162,7 @@ export async function getTrendingAnime(page = 1, perPage = 12): Promise<AniListA
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({
-      query: trendingQuery,
-      variables
-    })
+    body: JSON.stringify({ query: trendingQuery, variables })
   });
 
   const data = await response.json();
@@ -171,10 +170,16 @@ export async function getTrendingAnime(page = 1, perPage = 12): Promise<AniListA
     throw new Error(data.errors[0].message);
   }
   
-  return data.data.Page.media;
+  const results = data.data.Page.media;
+  apiCache.set(cacheKey, results, TTL.TRENDING);
+  return results;
 }
 
 export async function getAnimeDetails(id: number): Promise<AniListAnime> {
+  const cacheKey = `details_${id}`;
+  const cached = apiCache.get<AniListAnime>(cacheKey);
+  if (cached) return cached;
+
   const variables = { id };
 
   const response = await fetch(ANILIST_API_URL, {
@@ -183,10 +188,7 @@ export async function getAnimeDetails(id: number): Promise<AniListAnime> {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({
-      query: getByIdQuery,
-      variables
-    })
+    body: JSON.stringify({ query: getByIdQuery, variables })
   });
 
   const data = await response.json();
@@ -194,5 +196,7 @@ export async function getAnimeDetails(id: number): Promise<AniListAnime> {
     throw new Error(data.errors[0].message);
   }
   
-  return data.data.Media;
+  const result = data.data.Media;
+  apiCache.set(cacheKey, result, TTL.DETAILS);
+  return result;
 }
