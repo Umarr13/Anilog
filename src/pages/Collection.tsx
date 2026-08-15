@@ -175,9 +175,6 @@ export default function Collection() {
           </motion.div>
         ) : (
           filteredAnime.map((anime) => {
-            // 4.13 Airing Today Badge (Mock check)
-            const isAiringToday = anime.status === 'watching' && Math.random() > 0.8;
-            
             return (
               <motion.div key={anime.id} variants={variants.staggerChild} transition={transitions.default}>
                 {/* 3.8 — Context menu wrapper */}
@@ -196,10 +193,7 @@ export default function Collection() {
                           alt={`${anime.title} Thumbnail`}
                           onLoad={(e) => e.currentTarget.classList.add('loaded')}
                         />
-                        {/* 4.13 Airing Today Badge */}
-                        {isAiringToday && (
-                          <div className="absolute top-2 right-2 w-3 h-3 bg-secondary rounded-full border-2 border-surface-container-lowest" title="Airing Today" />
-                        )}
+                          {/* Airing Today Badge: reserved for Phase 7 real schedule integration */}
                         {isGridMode && (
                           <div className="absolute inset-x-0 bottom-0 p-3 pt-8 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end rounded-b-xl">
                             <h3 className="text-white font-headline-sm text-sm truncate w-full">{anime.title}</h3>
