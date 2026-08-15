@@ -120,7 +120,7 @@ export default function Dashboard() {
               variants={variants.staggerChild}
               transition={{ ...transitions.default, delay: index * 0.1 }}
             >
-              <Link to={`/anime/${anime.id}`} className="block h-full flex flex-col">
+              <Link to={`/anime/${anime.id}`} className="flex flex-col h-full">
                 <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container relative mb-3">
                   <motion.img
                     layoutId={`anime-cover-${anime.id}`}
