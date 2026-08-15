@@ -47,8 +47,9 @@ export default function AnimeDetails() {
         setLoading(true);
         const data = await getAnimeDetails(animeId);
         setAnilistData(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load details');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load details';
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -258,9 +259,6 @@ export default function AnimeDetails() {
                </div>
             </motion.div>
 
-            <button className="text-on-surface-variant hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-container relative z-10">
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
           </div>
           {/* 4.19 Scroll Progress Indicator */}
           <motion.div 
@@ -400,6 +398,8 @@ export default function AnimeDetails() {
                       <option value="watching">Watching</option>
                       <option value="completed">Watched</option>
                       <option value="plan_to_watch">Plan to Watch</option>
+                      <option value="paused">Paused</option>
+                      <option value="dropped">Dropped</option>
                     </select>
                     <button className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-tint transition-colors pointer-events-none">
                       <span className="material-symbols-outlined">edit</span>

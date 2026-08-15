@@ -62,8 +62,9 @@ export default function Search() {
             localStorage.setItem('anilog_recent_searches', JSON.stringify(newRecent));
           }
         }
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch anime');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to fetch anime';
+        setError(message);
       } finally {
         setLoading(false);
       }

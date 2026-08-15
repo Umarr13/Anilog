@@ -23,7 +23,7 @@ export default function TopAppBar({ activeTab }: TopAppBarProps) {
         <Link to="/collection" className={`font-label-md text-label-md hover:opacity-80 transition-opacity ${activeTab === 'collection' ? 'text-secondary dark:text-secondary-fixed' : 'text-on-surface-variant dark:text-on-surface-variant'}`}>
           Collection
         </Link>
-        <Link to="#" className={`font-label-md text-label-md hover:opacity-80 transition-opacity ${activeTab === 'profile' ? 'text-secondary dark:text-secondary-fixed' : 'text-on-surface-variant dark:text-on-surface-variant'}`}>
+        <Link to="/profile" className={`font-label-md text-label-md hover:opacity-80 transition-opacity ${activeTab === 'profile' ? 'text-secondary dark:text-secondary-fixed' : 'text-on-surface-variant dark:text-on-surface-variant'}`}>
           Profile
         </Link>
       </div>

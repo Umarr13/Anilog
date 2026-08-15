@@ -23,9 +23,9 @@ export default function BottomNavBar({ activeTab }: BottomNavBarProps) {
       
       {/* Add (Floating FAB in Center) */}
       <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-50">
-        <button className="bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+        <Link to="/search" className="bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
           <span className="material-symbols-outlined text-3xl">add</span>
-        </button>
+        </Link>
       </div>
       
       {/* Collection */}
