@@ -69,9 +69,11 @@ export default function Recommend() {
     // Simple filtering based on answers
     let pool = [...planToWatch];
     
-    if (finalAnswers.length === 'short') {
+    // Bug fix: use bracket notation — finalAnswers['length'] is the quiz answer key,
+    // NOT the Array.length property (which would always be undefined on a Record)
+    if (finalAnswers['length'] === 'short') {
       pool = pool.filter(a => a.episodes && a.episodes <= 26);
-    } else if (finalAnswers.length === 'long') {
+    } else if (finalAnswers['length'] === 'long') {
       pool = pool.filter(a => !a.episodes || a.episodes > 26);
     }
     
@@ -186,7 +188,7 @@ export default function Recommend() {
               
               <div className="flex gap-4 w-full">
                 <button 
-                  onClick={() => setStep(0)} 
+                  onClick={() => { setStep(0); setAnswers({}); }} 
                   className="flex-1 py-3 rounded-lg border border-outline-variant text-on-surface font-label-md hover:bg-surface-container-low transition-colors"
                 >
                   Try Again
