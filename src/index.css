@@ -40,10 +40,7 @@
     font-variation-settings: 'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24;
   }
 
-  .island-shadow {
-    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-  }
-
+  .island-shadow,
   .floating-island {
     box-shadow: 0 10px 40px rgba(0,0,0,0.04);
   }
