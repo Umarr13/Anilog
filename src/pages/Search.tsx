@@ -5,7 +5,8 @@
  * 3.6  Skeleton loaders while fetching
  * 3.9  Staggered card animations via framer-motion
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -16,13 +17,22 @@ import { transitions, variants } from '../hooks/useMotion';
 const SEARCH_QUERY_KEY = 'anilog_search_query';
 
 export default function Search() {
-  // 3.4 — Restore search query from sessionStorage
-  const [query, setQuery] = useState(() => sessionStorage.getItem(SEARCH_QUERY_KEY) || '');
+  const [searchParams] = useSearchParams();
+  // 3.4 — Restore search query from sessionStorage (or from ?genre= deep-link)
+  const [query, setQuery] = useState(() => {
+    const genreParam = searchParams.get('genre');
+    if (genreParam) return genreParam;
+    return sessionStorage.getItem(SEARCH_QUERY_KEY) || '';
+  });
   const [results, setResults] = useState<AniListAnime[]>([]);
   const [trending, setTrending] = useState<AniListAnime[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem('anilog_recent_searches') || '[]'); } catch { return []; }
   });
+  // Use a ref so the effect can always read the latest value without being a dep
+  const recentSearchesRef = useRef(recentSearches);
+  recentSearchesRef.current = recentSearches;
+
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -44,8 +54,10 @@ export default function Search() {
         } else {
           const searchRes = await searchAnime(query);
           setResults(searchRes);
-          if (searchRes.length > 0 && !recentSearches.includes(query)) {
-            const newRecent = [query, ...recentSearches].slice(0, 5);
+          // Use ref to avoid stale closure AND prevent re-fetch loop
+          const current = recentSearchesRef.current;
+          if (searchRes.length > 0 && !current.includes(query)) {
+            const newRecent = [query, ...current].slice(0, 5);
             setRecentSearches(newRecent);
             localStorage.setItem('anilog_recent_searches', JSON.stringify(newRecent));
           }
@@ -63,7 +75,7 @@ export default function Search() {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query, recentSearches]);
+  }, [query]); // ✅ recentSearches removed from deps — read via ref to prevent infinite loop
 
   // Bug Fix: Scroll to top on mount so search input is always visible (even on back navigation)
   useEffect(() => {
