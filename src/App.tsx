@@ -1,20 +1,35 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import Splash from './pages/Splash.tsx';
-import Dashboard from './pages/Dashboard.tsx';
-import Search from './pages/Search.tsx';
-import Collection from './pages/Collection.tsx';
-import AnimeDetails from './pages/AnimeDetails.tsx';
-import Profile from './pages/Profile.tsx';
-import Recommend from './pages/Recommend.tsx';
-import SeasonalCalendar from './pages/SeasonalCalendar.tsx';
-import { ToastProvider } from './components/Toast';
-import Onboarding from './components/Onboarding';
-import NativeBackHandler from './components/NativeBackHandler';
-
+import { lazy, Suspense, useEffect } from 'react';
+import { ToastProvider } from './components/Toast.tsx';
+import Onboarding from './components/Onboarding.tsx';
+import NativeBackHandler from './components/NativeBackHandler.tsx';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
-import { useEffect } from 'react';
+
+// Eagerly loaded — it's the entry point
+import Splash from './pages/Splash.tsx';
+
+// Phase 7: Lazy-loaded pages for code-splitting
+const Dashboard = lazy(() => import('./pages/Dashboard.tsx'));
+const Search = lazy(() => import('./pages/Search.tsx'));
+const Collection = lazy(() => import('./pages/Collection.tsx'));
+const AnimeDetails = lazy(() => import('./pages/AnimeDetails.tsx'));
+const Profile = lazy(() => import('./pages/Profile.tsx'));
+const Recommend = lazy(() => import('./pages/Recommend.tsx'));
+const SeasonalCalendar = lazy(() => import('./pages/SeasonalCalendar.tsx'));
+
+/** Minimal loading shell shown while a lazy chunk downloads */
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <span className="font-label-md text-on-surface-variant uppercase tracking-wider">Loading…</span>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   useEffect(() => {
@@ -40,16 +55,18 @@ function App() {
         <Router>
           <NativeBackHandler />
           <Onboarding />
-          <Routes>
-            <Route path="/" element={<Splash />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/collection" element={<Collection />} />
-            <Route path="/anime/:id" element={<AnimeDetails />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/recommend" element={<Recommend />} />
-            <Route path="/calendar" element={<SeasonalCalendar />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Splash />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/collection" element={<Collection />} />
+              <Route path="/anime/:id" element={<AnimeDetails />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/recommend" element={<Recommend />} />
+              <Route path="/calendar" element={<SeasonalCalendar />} />
+            </Routes>
+          </Suspense>
         </Router>
       </ToastProvider>
     </Sentry.ErrorBoundary>
