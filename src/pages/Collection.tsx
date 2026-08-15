@@ -40,6 +40,7 @@ const EMPTY_STATES: Record<string, { icon: string; title: string; message: strin
 export default function Collection() {
   const [activeTab, setActiveTab] = useState(0);
   const [isGridMode, setIsGridMode] = useState(() => localStorage.getItem('anilog_grid_mode') === 'true');
+  const [sortBy, setSortBy] = useState<string>(() => localStorage.getItem('anilog_sort_pref') || 'updated');
   const { showToast } = useToast();
 
   const toggleGrid = () => {
@@ -48,9 +49,38 @@ export default function Collection() {
     localStorage.setItem('anilog_grid_mode', String(newMode));
   };
 
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    localStorage.setItem('anilog_sort_pref', value);
+  };
+
+  // Phase 7: Client-side sorting applied directly in the live query to avoid unstable array refs
   const filteredAnime = useLiveQuery(
-    () => db.anime.where('status').equals(STATUSES[activeTab]).toArray(),
-    [activeTab]
+    async () => {
+      const animeList = await db.anime.where('status').equals(STATUSES[activeTab]).toArray();
+      
+      switch (sortBy) {
+        case 'title':
+          animeList.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case 'score':
+          animeList.sort((a, b) => b.score - a.score);
+          break;
+        case 'progress':
+          animeList.sort((a, b) => {
+            const pctA = a.episodes ? a.currentEpisode / a.episodes : 0;
+            const pctB = b.episodes ? b.currentEpisode / b.episodes : 0;
+            return pctB - pctA;
+          });
+          break;
+        case 'updated':
+        default:
+          animeList.sort((a, b) => b.updatedAt - a.updatedAt);
+          break;
+      }
+      return animeList;
+    },
+    [activeTab, sortBy]
   ) || [];
 
   // 3.3 — Remove with undo
@@ -122,14 +152,27 @@ export default function Collection() {
           <h2 className="font-headline-xl text-headline-xl text-primary mb-2">My Collection</h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant">Track your anime journey.</p>
         </div>
-        {/* 4.28 Adaptive Grid Density Toggle */}
-        <button 
-          onClick={toggleGrid}
-          className="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant active:scale-95"
-          title="Toggle Grid View"
-        >
-          <span className="material-symbols-outlined">{isGridMode ? 'view_list' : 'grid_view'}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Phase 7: Sort dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => handleSortChange(e.target.value)}
+            className="bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 font-label-md text-on-surface text-sm appearance-none cursor-pointer focus:outline-none focus:border-primary transition-colors"
+          >
+            <option value="updated">Recently Updated</option>
+            <option value="title">Title A→Z</option>
+            <option value="score">Score ↓</option>
+            <option value="progress">Progress %</option>
+          </select>
+          {/* 4.28 Adaptive Grid Density Toggle */}
+          <button 
+            onClick={toggleGrid}
+            className="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant active:scale-95"
+            title="Toggle Grid View"
+          >
+            <span className="material-symbols-outlined">{isGridMode ? 'view_list' : 'grid_view'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Tabs Island */}
@@ -223,8 +266,8 @@ export default function Collection() {
                             )}
                           </div>
                           <div className="text-right pl-4 border-l border-surface-variant">
-                            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">{anime.score ? Math.round(anime.score * 10) / 10 : '-'}</span>
-                            <span className="font-label-sm text-label-sm text-on-surface-variant">/10</span>
+                            <span className="font-headline-lg-mobile text-headline-lg-mobile text-primary block">{anime.score ? anime.score : '-'}</span>
+                            <span className="font-label-sm text-label-sm text-on-surface-variant">/5</span>
                           </div>
                         </>
                       )}
@@ -239,10 +282,10 @@ export default function Collection() {
 
       {/* Floating Action Button - Desktop only */}
       <div className="hidden md:flex fixed bottom-12 right-12 z-50">
-        <button className="flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-container border border-surface-dim rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:scale-105 active:scale-95 group">
+        <Link to="/search" className="flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-container border border-surface-dim rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:scale-105 active:scale-95 group">
           <span className="material-symbols-outlined text-primary text-[20px]">add</span>
           <span className="font-label-caps text-label-caps text-primary group-hover:text-primary transition-colors">Add to Collection</span>
-        </button>
+        </Link>
       </div>
     </Layout>
   );
