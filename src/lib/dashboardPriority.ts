@@ -16,6 +16,14 @@ export interface PriorityCardState {
   message: string;
 }
 
+/** Deterministic index based on day-of-year — same pick all day, no re-render flicker */
+function dailyPick<T>(arr: T[]): T {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return arr[dayOfYear % arr.length];
+}
+
 /**
  * 6.15 Adaptive Dashboard Scoring & 6.16 Behavioral Time-Pattern Awareness
  * Evaluates candidate states against local Dexie data and current time.
@@ -87,30 +95,30 @@ export function getDashboardPriorityCard(
   // 4. Fallbacks: Quote or Plan to Watch
   if (isLowActivityWindow || watching.length === 0) {
     // If it's a low activity window (e.g. Tuesday afternoon), show a lighter quote card
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    const selectedQuote = dailyPick(quotes);
     return {
       type: 'quote',
-      quote: randomQuote,
-      message: `"${randomQuote.quote}" — ${randomQuote.character}`,
+      quote: selectedQuote,
+      message: `"${selectedQuote.quote}" — ${selectedQuote.character}`,
       // Optionally link to the anime if it exists in the user's DB
-      anime: allAnime.find((a) => a.title === randomQuote.anime || a.romajiTitle === randomQuote.anime)
+      anime: allAnime.find((a) => a.title === selectedQuote.anime || a.romajiTitle === selectedQuote.anime)
     };
   }
 
   if (planToWatch.length > 0) {
-    const randomPTW = planToWatch[Math.floor(Math.random() * planToWatch.length)];
+    const selectedPTW = dailyPick(planToWatch);
     return {
       type: 'plan_to_watch',
-      anime: randomPTW,
-      message: `Looking for something new? Start ${randomPTW.title}.`,
+      anime: selectedPTW,
+      message: `Looking for something new? Start ${selectedPTW.title}.`,
     };
   }
 
   // Absolute fallback
-  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  const fallbackQuote = dailyPick(quotes);
   return {
     type: 'quote',
-    quote: randomQuote,
-    message: `"${randomQuote.quote}" — ${randomQuote.character}`,
+    quote: fallbackQuote,
+    message: `"${fallbackQuote.quote}" — ${fallbackQuote.character}`,
   };
 }
