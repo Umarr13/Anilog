@@ -17,16 +17,28 @@ export interface AnimeEntry {
   updatedAt: number;
 }
 
+export interface ReportEntry {
+  id?: number;
+  comment: string;
+  screenshotBase64: string;
+  context: any;
+  status: 'pending' | 'submitted' | 'failed';
+  createdAt: number;
+}
+
 const db = new Dexie('AnilogDB') as Dexie & {
-  anime: EntityTable<
-    AnimeEntry,
-    'id' // primary key 'id'
-  >;
+  anime: EntityTable<AnimeEntry, 'id'>;
+  reports: EntityTable<ReportEntry, 'id'>;
 };
 
 // Schema declaration
 db.version(1).stores({
-  anime: 'id, status, updatedAt' // Primary key and indexed props
+  anime: 'id, status, updatedAt'
+});
+
+db.version(2).stores({
+  anime: 'id, status, updatedAt',
+  reports: '++id, status, createdAt'
 });
 
 export type { Dexie };

@@ -6,6 +6,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import { ToastProvider } from './components/Toast.tsx';
 import Onboarding from './components/Onboarding.tsx';
 import NativeBackHandler from './components/NativeBackHandler.tsx';
+import FeedbackReporter from './components/FeedbackReporter.tsx';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 
@@ -92,6 +93,7 @@ function App() {
       <ToastProvider>
         <Router>
           <NativeBackHandler />
+          <FeedbackReporter />
           <Onboarding />
           <AnimatedRoutes />
         </Router>
