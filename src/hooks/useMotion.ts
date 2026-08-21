@@ -80,4 +80,19 @@ export const variants = {
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -30 },
   },
+  /** Directional page transition (custom: isBack) */
+  directionalPage: {
+    initial: (isBack: boolean) => ({
+      opacity: 0,
+      x: isBack ? -40 : 40,
+    }),
+    animate: {
+      opacity: 1,
+      x: 0,
+    },
+    exit: (isBack: boolean) => ({
+      opacity: 0,
+      x: isBack ? 40 : -40,
+    }),
+  },
 } as const;

@@ -1,5 +1,7 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { transitions, variants } from './hooks/useMotion.ts';
 import { lazy, Suspense, useEffect } from 'react';
 import { ToastProvider } from './components/Toast.tsx';
 import Onboarding from './components/Onboarding.tsx';
@@ -31,6 +33,42 @@ function PageLoader() {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+  const navType = useNavigationType();
+  
+  // POP means the user pressed the back button or swiped back
+  const isBack = navType === 'POP';
+
+  return (
+    <AnimatePresence mode="popLayout" custom={isBack}>
+      <motion.div
+        key={location.pathname}
+        custom={isBack}
+        variants={variants.directionalPage}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={transitions.page}
+        className="w-full min-h-screen bg-background"
+      >
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location}>
+            <Route path="/" element={<Splash />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/collection" element={<Collection />} />
+            <Route path="/anime/:id" element={<AnimeDetails />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/recommend" element={<Recommend />} />
+            <Route path="/calendar" element={<SeasonalCalendar />} />
+          </Routes>
+        </Suspense>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
@@ -55,18 +93,7 @@ function App() {
         <Router>
           <NativeBackHandler />
           <Onboarding />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Splash />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/collection" element={<Collection />} />
-              <Route path="/anime/:id" element={<AnimeDetails />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/recommend" element={<Recommend />} />
-              <Route path="/calendar" element={<SeasonalCalendar />} />
-            </Routes>
-          </Suspense>
+          <AnimatedRoutes />
         </Router>
       </ToastProvider>
     </Sentry.ErrorBoundary>

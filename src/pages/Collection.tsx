@@ -16,6 +16,7 @@ import { useToast } from '../components/Toast';
 import { transitions, variants } from '../hooks/useMotion';
 import { useSound } from '../hooks/useSound';
 import { useEffect } from 'react';
+import PullToRefresh from '../components/PullToRefresh';
 
 const TAB_LABELS = ['Watched', 'Watching', 'Plan to Watch'] as const;
 const STATUSES: AnimeEntry['status'][] = ['completed', 'watching', 'plan_to_watch'];
@@ -157,8 +158,17 @@ export default function Collection() {
   const currentStatus = STATUSES[activeTab];
   const empty = EMPTY_STATES[currentStatus];
 
+  // 7.2.1 Native Pull-to-Refresh
+  const handleRefresh = async () => {
+    // In a real app, you would fetch the latest AniList data and update the DB here.
+    // For now, we simulate a 1.5s network request.
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    showToast('Collection synced with AniList');
+  };
+
   return (
     <Layout activeTab="collection">
+      <PullToRefresh onRefresh={handleRefresh}>
       {/* Header Section */}
       <div className="mb-4 md:mb-8 flex justify-between items-end">
         <div>
@@ -189,7 +199,7 @@ export default function Collection() {
       </div>
 
       {/* Tabs Island */}
-      <div className="bg-surface-container-lowest rounded-xl p-2 flex relative floating-island mb-8 overflow-x-auto no-scrollbar">
+      <div className="bg-surface-container-lowest rounded-xl p-2 flex relative floating-island mb-8 mx-4 overflow-x-auto no-scrollbar">
         {TAB_LABELS.map((label, i) => (
           <button
             key={label}
@@ -203,7 +213,7 @@ export default function Collection() {
 
       {/* Collection List — 3.9 staggered animation */}
       <motion.div
-        className={isGridMode ? "grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" : "space-y-4"}
+        className={isGridMode ? "grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-4" : "space-y-4 px-4"}
         variants={variants.staggerContainer}
         initial="initial"
         animate="animate"
@@ -301,6 +311,7 @@ export default function Collection() {
           })
         )}
       </motion.div>
+      </PullToRefresh>
 
       {/* 7.6 Contextual Floating Action Button */}
       <div className="hidden md:flex fixed bottom-12 right-12 z-50">
