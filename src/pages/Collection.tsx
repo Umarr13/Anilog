@@ -233,8 +233,13 @@ export default function Collection() {
           filteredAnime.map((anime) => {
             return (
               <motion.div key={anime.id} variants={variants.staggerChild} transition={transitions.default}>
-                {/* 3.8 — Context menu wrapper */}
-                <ContextMenu items={getMenuItems(anime)}>
+                {/* 3.8 / 7.2.4 — Context menu with Peek Preview wrapper */}
+                <ContextMenu 
+                  items={getMenuItems(anime)}
+                  previewImage={anime.image}
+                  previewTitle={anime.title}
+                  previewSubtitle={anime.score ? `${anime.score}/5` : ''}
+                >
                   {/* 4.37 Swipeable Quick Actions structure added (using group hover for now in CSS, or basic structure) */}
                   <div className="relative group overflow-hidden rounded-xl">
                     <Link

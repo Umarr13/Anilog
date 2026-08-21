@@ -20,10 +20,13 @@ interface ContextMenuProps {
   children: ReactNode;
   items: ContextMenuItem[];
   disabled?: boolean;
+  previewImage?: string;
+  previewTitle?: string;
+  previewSubtitle?: string;
 }
 
 // ── Component ──────────────────────────────────────────────────────────────────
-export default function ContextMenu({ children, items, disabled }: ContextMenuProps) {
+export default function ContextMenu({ children, items, disabled, previewImage, previewTitle, previewSubtitle }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,15 +73,40 @@ export default function ContextMenu({ children, items, disabled }: ContextMenuPr
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop with extreme blur for 'Peek' effect */}
             <motion.div
-              className="fixed inset-0 z-[90]"
+              className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={transitions.micro}
               onClick={close}
             />
+
+            {/* 7.2.4 Card Preview "Peek" */}
+            {(previewImage || previewTitle) && (
+              <motion.div
+                className="fixed z-[92] top-1/2 left-1/2 -translate-x-1/2 -translate-y-[70%] w-[240px] flex flex-col items-center pointer-events-none"
+                initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                transition={transitions.spring}
+              >
+                {previewImage && (
+                  <img 
+                    src={previewImage} 
+                    alt="Preview" 
+                    className="w-full aspect-[3/4] object-cover rounded-2xl shadow-2xl border-2 border-surface-variant/30"
+                  />
+                )}
+                {previewTitle && (
+                  <div className="mt-4 text-center">
+                    <h3 className="font-headline-md text-white text-xl drop-shadow-md">{previewTitle}</h3>
+                    {previewSubtitle && <p className="text-white/80 font-label-md mt-1 drop-shadow-md">{previewSubtitle}</p>}
+                  </div>
+                )}
+              </motion.div>
+            )}
 
             {/* 4.25 Bottom Sheet for Quick Actions */}
             <motion.div
