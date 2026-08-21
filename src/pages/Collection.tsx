@@ -14,6 +14,8 @@ import { db, type AnimeEntry } from '../data/db';
 import ContextMenu, { type ContextMenuItem } from '../components/ContextMenu';
 import { useToast } from '../components/Toast';
 import { transitions, variants } from '../hooks/useMotion';
+import { useSound } from '../hooks/useSound';
+import { useEffect } from 'react';
 
 const TAB_LABELS = ['Watched', 'Watching', 'Plan to Watch'] as const;
 const STATUSES: AnimeEntry['status'][] = ['completed', 'watching', 'plan_to_watch'];
@@ -41,7 +43,18 @@ export default function Collection() {
   const [activeTab, setActiveTab] = useState(0);
   const [isGridMode, setIsGridMode] = useState(() => localStorage.getItem('anilog_grid_mode') === 'true');
   const [sortBy, setSortBy] = useState<string>(() => localStorage.getItem('anilog_sort_pref') || 'updated');
+  const [scrolled, setScrolled] = useState(false);
   const { showToast } = useToast();
+  const { playPop } = useSound();
+
+  // 7.6 Contextual FAB Behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 200);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleGrid = () => {
     const newMode = !isGridMode;
@@ -231,7 +244,11 @@ export default function Collection() {
                       <div className={`relative ${isGridMode ? 'w-full h-full' : 'w-16 h-16 flex-shrink-0'}`}>
                         <motion.img
                           layoutId={`anime-cover-${anime.id}`}
-                          className={`blur-up object-cover bg-surface-container-low border border-surface-variant ${isGridMode ? 'w-full h-full rounded-xl' : 'w-16 h-16 rounded-lg'}`}
+                          className={`blur-up object-cover bg-surface-container-low border ${
+                            Date.now() - anime.updatedAt < 15000 
+                              ? 'border-primary ring-2 ring-primary/50 animate-pulse' 
+                              : 'border-surface-variant'
+                          } ${isGridMode ? 'w-full h-full rounded-xl' : 'w-16 h-16 rounded-lg'}`}
                           src={anime.image}
                           alt={`${anime.title} Thumbnail`}
                           onLoad={(e) => e.currentTarget.classList.add('loaded')}
@@ -280,12 +297,29 @@ export default function Collection() {
         )}
       </motion.div>
 
-      {/* Floating Action Button - Desktop only */}
+      {/* 7.6 Contextual Floating Action Button */}
       <div className="hidden md:flex fixed bottom-12 right-12 z-50">
-        <Link to="/search" className="flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-container border border-surface-dim rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:scale-105 active:scale-95 group">
-          <span className="material-symbols-outlined text-primary text-[20px]">add</span>
-          <span className="font-label-caps text-label-caps text-primary group-hover:text-primary transition-colors">Add to Collection</span>
-        </Link>
+        <motion.div
+          layout
+          initial={false}
+          animate={{ width: scrolled ? 'auto' : 'auto' }}
+          className="flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-container border border-surface-dim rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+          onClick={() => {
+            playPop(); // 7.5 UI Sound
+            if (scrolled) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              window.location.href = '/search'; // Simplified routing for this anchor
+            }
+          }}
+        >
+          <motion.span layout className="material-symbols-outlined text-primary text-[20px]">
+            {scrolled ? 'arrow_upward' : 'add'}
+          </motion.span>
+          <motion.span layout className="font-label-caps text-label-caps text-primary group-hover:text-primary transition-colors">
+            {scrolled ? 'Scroll to Top' : 'Add to Collection'}
+          </motion.span>
+        </motion.div>
       </div>
     </Layout>
   );

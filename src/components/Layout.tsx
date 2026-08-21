@@ -14,6 +14,14 @@ interface LayoutProps {
 export default function Layout({ children, activeTab = 'dashboard', showNav = true }: LayoutProps) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
+  // 7.9 Custom App-Switcher Preview Label
+  useEffect(() => {
+    if (activeTab) {
+      const tabName = activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+      document.title = `Anilog | ${tabName}`;
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
