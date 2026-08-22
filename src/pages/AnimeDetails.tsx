@@ -447,16 +447,6 @@ export default function AnimeDetails() {
                           <span className="material-symbols-outlined">add</span>
                         </button>
                       </div>
-                    </div>
-                    {/* Slider / Squiral Bar */}
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max={displayEpisodes || userProgress + 50} 
-                      value={userProgress}
-                      onChange={(e) => handleUpdateProgress(parseInt(e.target.value, 10) - userProgress)}
-                      className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary"
-                    />
                   </div>
                 </div>
                 
