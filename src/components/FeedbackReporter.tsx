@@ -107,7 +107,7 @@ ${comment || '_No comment provided_'}
         id="feedback-reporter-trigger"
         onClick={handleOpen}
         disabled={isCapturing}
-        className="fixed bottom-[100px] md:bottom-12 left-4 z-50 w-12 h-12 bg-surface hover:bg-surface-container shadow-lg border border-surface-variant rounded-full flex items-center justify-center text-on-surface-variant transition-transform hover:scale-110 active:scale-95"
+        className="fixed bottom-[130px] md:bottom-12 left-4 z-50 w-12 h-12 bg-surface hover:bg-surface-container shadow-lg border border-surface-variant rounded-full flex items-center justify-center text-on-surface-variant transition-transform hover:scale-110 active:scale-95"
         title="Report an issue"
       >
         <span className={`material-symbols-outlined ${isCapturing ? 'animate-spin' : ''}`}>
