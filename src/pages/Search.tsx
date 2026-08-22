@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { searchAnime, getTrendingAnime, getTopRatedAnime, getHiddenGems, type AniListAnime } from '../api/anilist';
 import Skeleton from '../components/Skeleton';
 import { transitions, variants } from '../hooks/useMotion';
@@ -119,29 +119,34 @@ export default function Search() {
             </button>
           )}
 
-          {/* 4.12 Recent Searches */}
-          {isFocused && query.trim() === '' && recentSearches.length > 0 && (
-            <motion.div 
-              className="absolute top-full mt-2 left-0 right-0 bg-surface-container-low rounded-xl island-shadow flex flex-col p-2 border border-outline-variant/10 overflow-hidden"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="flex justify-between items-center px-4 py-2 text-on-surface-variant">
-                <span className="font-label-sm uppercase tracking-wider">Recent Searches</span>
-                <button onClick={() => { setRecentSearches([]); localStorage.removeItem('anilog_recent_searches'); }} className="text-xs hover:text-primary">Clear</button>
-              </div>
-              {recentSearches.map(term => (
+          {/* 4.12 Recent Searches - UX Pills */}
+          <AnimatePresence>
+            {isFocused && query.trim() === '' && recentSearches.length > 0 && (
+              <motion.div 
+                className="absolute top-full mt-4 left-0 right-0 flex gap-2 overflow-x-auto pb-2 snap-x hide-scrollbar"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+              >
+                {recentSearches.map(term => (
+                  <button 
+                    key={term} 
+                    onClick={() => setQuery(term)} 
+                    className="snap-start flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-high/60 backdrop-blur-md rounded-full text-on-surface-variant hover:bg-surface-container transition-colors border border-outline-variant/10 active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">history</span>
+                    <span className="font-label-md text-primary whitespace-nowrap">{term}</span>
+                  </button>
+                ))}
                 <button 
-                  key={term} 
-                  onClick={() => setQuery(term)} 
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-surface-container rounded-lg text-left transition-colors"
+                  onClick={() => { setRecentSearches([]); localStorage.removeItem('anilog_recent_searches'); }}
+                  className="snap-start flex-shrink-0 flex items-center justify-center px-4 py-2 bg-error-container/30 rounded-full text-error font-label-md hover:bg-error-container/50 transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
-                  <span className="font-body-md text-primary">{term}</span>
+                  Clear
                 </button>
-              ))}
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
