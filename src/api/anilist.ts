@@ -30,6 +30,22 @@ export interface AniListAnime {
     nodes: { name: string }[];
   };
   nextAiringEpisode: AniListAiringSchedule | null;
+  trailer?: {
+    id: string;
+    site: string;
+    thumbnail: string;
+  } | null;
+  relations?: {
+    edges: {
+      relationType: string;
+      node: {
+        id: number;
+        title: { english: string; romaji: string };
+        coverImage: { large: string };
+        type: string;
+      }
+    }[];
+  };
 }
 
 // Shared media fields fragment (string literal, inlined into each query)
@@ -47,6 +63,13 @@ const MEDIA_FIELDS = `
   seasonYear
   studios(isMain: true) { nodes { name } }
   nextAiringEpisode { airingAt episode }
+  trailer { id site thumbnail }
+  relations {
+    edges {
+      relationType
+      node { id title { english romaji } coverImage { large } type }
+    }
+  }
 `;
 
 const searchQuery = `

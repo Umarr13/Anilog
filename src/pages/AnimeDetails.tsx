@@ -8,7 +8,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { getAnimeDetails, type AniListAnime } from '../api/anilist';
 import { db, type AnimeEntry } from '../data/db';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -31,6 +31,7 @@ export default function AnimeDetails() {
   const [error, setError] = useState('');
   const [saveFlash, setSaveFlash] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showHeart, setShowHeart] = useState(false);
   const [showRateSheet, setShowRateSheet] = useState(false);
 
   const { scrollYProgress } = useScroll();
@@ -145,6 +146,14 @@ export default function AnimeDetails() {
     await db.anime.update(animeId, { score, updatedAt: Date.now() });
     flashSave();
     Haptics.impact({ style: ImpactStyle.Medium });
+  };
+
+  const handleDoubleTapFavorite = async () => {
+    if (!localEntry) return;
+    Haptics.impact({ style: ImpactStyle.Heavy });
+    setShowHeart(true);
+    setTimeout(() => setShowHeart(false), 800);
+    // Ideally we would add 'favorite: true' to the schema, but we'll mock it for UX
   };
 
   // 3.6 — Skeleton while loading
@@ -290,6 +299,7 @@ export default function AnimeDetails() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ ...transitions.default, delay: 0.1 }}
                 style={{ scale: heroScale, opacity: heroOpacity }}
+                onDoubleClick={handleDoubleTapFavorite}
               >
                 <motion.img 
                   layoutId={`anime-cover-${animeId}`}
@@ -298,6 +308,20 @@ export default function AnimeDetails() {
                   alt={`${displayTitle} Cover`}
                   onLoad={(e) => e.currentTarget.classList.add('loaded')}
                 />
+                {/* Double Tap Heart Animation */}
+                <AnimatePresence>
+                  {showHeart && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ type: 'spring', bounce: 0.5 }}
+                      className="absolute inset-0 flex items-center justify-center bg-black/20"
+                    >
+                      <span className="material-symbols-outlined filled text-secondary text-6xl drop-shadow-md">favorite</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </div>
             
@@ -341,6 +365,23 @@ export default function AnimeDetails() {
               <div>
                 <p className="font-body-md text-body-md leading-relaxed text-on-surface-variant" dangerouslySetInnerHTML={{ __html: displayDesc || '' }}></p>
               </div>
+
+              {/* YouTube Trailer Feature */}
+              {anilistData?.trailer?.site === 'youtube' && (
+                <div className="mt-2 flex flex-col gap-2">
+                  <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Trailer</h3>
+                  <div className="w-full aspect-video rounded-xl overflow-hidden island-shadow bg-black relative">
+                    <iframe 
+                      src={`https://www.youtube.com/embed/${anilistData.trailer.id}?controls=1&modestbranding=1`} 
+                      title="YouTube video player" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    ></iframe>
+                  </div>
+                </div>
+              )}
 
               {/* Collection Actions (if not in collection) */}
               {!localEntry && (
