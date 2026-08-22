@@ -344,6 +344,17 @@ export default function AnimeDetails() {
               <div>
                 <h2 className="font-headline-xl text-headline-xl text-primary">{displayTitle}</h2>
                 <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">{displayRomaji}</p>
+                {/* Studio & Creator Tags */}
+                {anilistData?.studios?.nodes && anilistData.studios.nodes.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {anilistData.studios.nodes.map(studio => (
+                      <span key={studio.name} className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container border border-outline-variant/20 text-on-surface-variant font-label-sm rounded-md">
+                        <span className="material-symbols-outlined text-[14px]">brush</span>
+                        {studio.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               
               <div className="flex gap-12 py-6 border-y border-outline-variant/20">
