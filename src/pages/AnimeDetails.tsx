@@ -447,10 +447,9 @@ export default function AnimeDetails() {
                           <span className="material-symbols-outlined">add</span>
                         </button>
                       </div>
+                    </div>
                   </div>
                 </div>
-                
-                {/* 3.7 — Bigger star tap targets (44×44px) - Now out of 5 */}
                 <div className="flex flex-col gap-2">
                   <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">My Rating</label>
                   <div className="flex items-center gap-1 h-full">

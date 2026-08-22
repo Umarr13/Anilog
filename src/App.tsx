@@ -76,9 +76,31 @@ function App() {
   // useEpisodeNotifications(); // Coming in v0.5.0
 
   useEffect(() => {
-    if (Capacitor.isNativePlatform()) {
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-    }
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const applyTheme = (isDark: boolean) => {
+      const root = document.documentElement;
+      if (isDark) {
+        root.classList.add('dark');
+        root.classList.remove('light');
+        if (Capacitor.isNativePlatform()) {
+          StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+        }
+      } else {
+        root.classList.add('light');
+        root.classList.remove('dark');
+        if (Capacitor.isNativePlatform()) {
+          StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+        }
+      }
+    };
+
+    applyTheme(mediaQuery.matches);
+    
+    const listener = (e: MediaQueryListEvent) => applyTheme(e.matches);
+    mediaQuery.addEventListener('change', listener);
+    
+    return () => mediaQuery.removeEventListener('change', listener);
   }, []);
   return (
     <Sentry.ErrorBoundary fallback={
