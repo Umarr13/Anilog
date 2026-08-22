@@ -8,7 +8,7 @@ import Onboarding from './components/Onboarding.tsx';
 import NativeBackHandler from './components/NativeBackHandler.tsx';
 import FeedbackReporter from './components/FeedbackReporter.tsx';
 import OfflineBanner from './components/OfflineBanner.tsx';
-import { useEpisodeNotifications } from './hooks/useEpisodeNotifications';
+// import { useEpisodeNotifications } from './hooks/useEpisodeNotifications';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 
@@ -73,7 +73,7 @@ function AnimatedRoutes() {
 }
 
 function App() {
-  useEpisodeNotifications();
+  // useEpisodeNotifications(); // Coming in v0.5.0
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {

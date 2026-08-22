@@ -149,20 +149,27 @@ export default function Search() {
       <section className="flex flex-col gap-stack-md w-full mt-8">
         {/* Discover tabs (only when no active query) */}
         {!query && (
-          <div className="flex gap-2 mb-2 overflow-x-auto no-scrollbar">
-            {([['trending', 'Trending'], ['top_rated', 'Top Rated'], ['hidden_gems', 'Hidden Gems']] as const).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setDiscoverTab(key)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full font-label-md text-sm transition-colors border ${
-                  discoverTab === key
-                    ? 'bg-primary text-on-primary border-primary'
-                    : 'bg-surface-container border-outline-variant/30 text-on-surface-variant hover:border-primary'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+          <div className="flex gap-2 mb-2 overflow-x-auto no-scrollbar pb-1">
+            {([['trending', 'Trending'], ['top_rated', 'Top Rated'], ['hidden_gems', 'Hidden Gems']] as const).map(([key, label]) => {
+              const isLocked = key !== 'trending';
+              return (
+                <button
+                  key={key}
+                  disabled={isLocked}
+                  onClick={() => setDiscoverTab(key)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-full font-label-md text-sm transition-colors border flex items-center gap-2 ${
+                    isLocked 
+                      ? 'bg-surface-container-lowest border-outline-variant/20 text-on-surface-variant/40 cursor-not-allowed opacity-60 relative'
+                      : discoverTab === key
+                        ? 'bg-primary text-on-primary border-primary'
+                        : 'bg-surface-container border-outline-variant/30 text-on-surface-variant hover:border-primary'
+                  }`}
+                >
+                  {isLocked && <span className="material-symbols-outlined text-[16px]">lock</span>}
+                  {label}
+                </button>
+              );
+            })}
           </div>
         )}
         <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">

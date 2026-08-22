@@ -129,7 +129,7 @@ export default function AnimeDetails() {
       await db.anime.update(animeId, { status: 'completed', updatedAt: Date.now() });
       triggerCelebration();
       // Feature #14 — prompt to rate after completing
-      setTimeout(() => setShowRateSheet(true), 2600);
+      // setTimeout(() => setShowRateSheet(true), 2600); // Coming in v0.4.0
     }
   };
 

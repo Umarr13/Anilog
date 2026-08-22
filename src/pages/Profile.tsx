@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 import { useRef } from 'react';
 import { useToast } from '../components/Toast';
 import ShareCard from '../components/ShareCard';
+import ComingSoon from '../components/ComingSoon';
 
 const COLORS = ['#D1C4E9', '#B39DDB', '#9575CD', '#7E57C2', '#673AB7', '#5E35B1', '#512DA8'];
 
@@ -175,19 +176,21 @@ export default function Profile() {
 
         {/* Feature #12 — Watch Time Calculator */}
         {(stats?.watchHours ?? 0) > 0 && (
-          <section className="bg-surface-variant rounded-[24px] p-5 border border-surface flex items-center gap-4">
-            <span className="material-symbols-outlined text-4xl text-primary">timer</span>
-            <div>
-              <p className="font-headline-md text-on-surface">
-                You've spent <span className="text-primary">{stats!.watchHours.toLocaleString()} hours</span> watching anime
-              </p>
-              {(stats?.watchDays ?? 0) > 0 && (
-                <p className="font-body-sm text-on-surface-variant mt-0.5">
-                  That's {stats!.watchDays} full days of your life — worth every second.
+          <ComingSoon version="0.3.0" title="Watch Time Analytics">
+            <section className="bg-surface-variant rounded-[24px] p-5 border border-surface flex items-center gap-4">
+              <span className="material-symbols-outlined text-4xl text-primary">timer</span>
+              <div>
+                <p className="font-headline-md text-on-surface">
+                  You've spent <span className="text-primary">{stats!.watchHours.toLocaleString()} hours</span> watching anime
                 </p>
-              )}
-            </div>
-          </section>
+                {(stats?.watchDays ?? 0) > 0 && (
+                  <p className="font-body-sm text-on-surface-variant mt-0.5">
+                    That's {stats!.watchDays} full days of your life — worth every second.
+                  </p>
+                )}
+              </div>
+            </section>
+          </ComingSoon>
         )}
 
         {/* Charts Section */}
@@ -224,34 +227,38 @@ export default function Profile() {
             </div>
 
             {/* Feature #7 — Score Distribution */}
-            <div className="bg-surface-variant rounded-[32px] p-6 shadow-sm border border-surface flex flex-col h-64">
-              <h3 className="font-title-md text-title-md text-on-surface mb-4">Score Distribution</h3>
-              <div className="flex-1 min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats?.scoreDistData} barCategoryGap="20%">
-                    <XAxis dataKey="star" tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'var(--color-surface)' }} cursor={{ fill: 'var(--color-surface-container)' }} />
-                    <Bar dataKey="count" fill="var(--color-secondary)" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Feature #13 — Genre DNA Radar */}
-            {(stats?.genreDna?.length ?? 0) >= 3 && (
+            <ComingSoon version="0.3.0" title="Score Distribution">
               <div className="bg-surface-variant rounded-[32px] p-6 shadow-sm border border-surface flex flex-col h-64">
-                <h3 className="font-title-md text-title-md text-on-surface mb-4">Genre DNA</h3>
+                <h3 className="font-title-md text-title-md text-on-surface mb-4">Score Distribution</h3>
                 <div className="flex-1 min-h-0">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={stats?.genreDna}>
-                      <PolarGrid stroke="var(--color-outline-variant)" />
-                      <PolarAngleAxis dataKey="genre" tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 10 }} />
-                      <Radar name="Genres" dataKey="value" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.25} />
-                    </RadarChart>
+                    <BarChart data={stats?.scoreDistData} barCategoryGap="20%">
+                      <XAxis dataKey="star" tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis hide />
+                      <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'var(--color-surface)' }} cursor={{ fill: 'var(--color-surface-container)' }} />
+                      <Bar dataKey="count" fill="var(--color-secondary)" radius={[6, 6, 0, 0]} />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
+            </ComingSoon>
+
+            {/* Feature #13 — Genre DNA Radar */}
+            {(stats?.genreDna?.length ?? 0) >= 3 && (
+              <ComingSoon version="0.3.0" title="Genre DNA">
+                <div className="bg-surface-variant rounded-[32px] p-6 shadow-sm border border-surface flex flex-col h-64">
+                  <h3 className="font-title-md text-title-md text-on-surface mb-4">Genre DNA</h3>
+                  <div className="flex-1 min-h-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart data={stats?.genreDna}>
+                        <PolarGrid stroke="var(--color-outline-variant)" />
+                        <PolarAngleAxis dataKey="genre" tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 10 }} />
+                        <Radar name="Genres" dataKey="value" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.25} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </ComingSoon>
             )}
           </section>
         ) : (
@@ -280,21 +287,23 @@ export default function Profile() {
             </div>
 
             {/* Feature #11 — MAL Import */}
-            <div className="bg-surface-variant rounded-[24px] p-5 border border-surface flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-primary">
-                <span className="material-symbols-outlined">upload_file</span>
-                <h3 className="font-title-md text-title-md">MAL Import</h3>
+            <ComingSoon version="0.5.0" title="MAL Import">
+              <div className="bg-surface-variant rounded-[24px] p-5 border border-surface flex flex-col gap-3">
+                <div className="flex items-center gap-2 text-primary">
+                  <span className="material-symbols-outlined">upload_file</span>
+                  <h3 className="font-title-md text-title-md">MAL Import</h3>
+                </div>
+                <p className="text-body-sm text-on-surface-variant">Import your MyAnimeList collection from an XML export file. Go to MAL → Profile → Export.</p>
+                <input type="file" accept=".xml" ref={malFileInputRef} onChange={handleMalImport} className="hidden" />
+                <button
+                  onClick={() => malFileInputRef.current?.click()}
+                  className="mt-auto py-2 bg-secondary text-on-secondary rounded-full font-label-md flex justify-center items-center gap-2 hover:scale-105 active:scale-95 transition-transform"
+                >
+                  <span className="material-symbols-outlined text-[18px]">upload</span>
+                  Import from MAL
+                </button>
               </div>
-              <p className="text-body-sm text-on-surface-variant">Import your MyAnimeList collection from an XML export file. Go to MAL → Profile → Export.</p>
-              <input type="file" accept=".xml" ref={malFileInputRef} onChange={handleMalImport} className="hidden" />
-              <button
-                onClick={() => malFileInputRef.current?.click()}
-                className="mt-auto py-2 bg-secondary text-on-secondary rounded-full font-label-md flex justify-center items-center gap-2 hover:scale-105 active:scale-95 transition-transform"
-              >
-                <span className="material-symbols-outlined text-[18px]">upload</span>
-                Import from MAL
-              </button>
-            </div>
+            </ComingSoon>
 
             <div className="bg-surface-variant rounded-[24px] p-5 border border-surface flex flex-col gap-3 opacity-70">
               <div className="flex items-center gap-2 text-primary">
@@ -310,7 +319,9 @@ export default function Profile() {
           </div>
 
           {/* Feature #8 — Share Card */}
-          <ShareCard allAnime={stats?.allAnime ?? []} />
+          <ComingSoon version="0.4.0" title="Canvas Export">
+            <ShareCard allAnime={stats?.allAnime ?? []} />
+          </ComingSoon>
 
           <div className="pt-4 flex justify-center">
             <a

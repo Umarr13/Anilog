@@ -7,6 +7,7 @@ import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'framer-motion';
+import ComingSoon from '../components/ComingSoon';
 import { db } from '../data/db';
 import { transitions, variants } from '../hooks/useMotion';
 import { getDashboardPriorityCard } from '../lib/dashboardPriority';
@@ -110,41 +111,43 @@ export default function Dashboard() {
       </motion.section>
       {/* Feature #6 — "Where Was I?" Resume Card */}
       {resumeCard && (
-        <motion.section
-          className="mb-6"
-          variants={variants.fadeSlideUp}
-          initial="initial"
-          animate="animate"
-        >
-          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-xs mb-3 px-1">Where Was I?</p>
-          <Link to={`/anime/${resumeCard.id}`} className="block">
-            <div className="bg-surface-container-lowest rounded-2xl island-shadow p-4 flex items-center gap-4 border border-outline-variant/20 hover:-translate-y-0.5 transition-transform">
-              <img
-                src={resumeCard.image}
-                alt={resumeCard.title}
-                className="w-14 h-20 rounded-xl object-cover flex-shrink-0"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-label-sm text-secondary uppercase tracking-wider text-[10px] mb-0.5">
-                  {resumeCard.status === 'rewatching' ? `Rewatch #${resumeCard.rewatchCount ?? 1}` : 'Continue Watching'}
-                </p>
-                <h3 className="font-headline-sm text-primary truncate">{resumeCard.title}</h3>
-                <p className="font-body-sm text-on-surface-variant text-xs mt-0.5">
-                  Ep {resumeCard.currentEpisode} / {resumeCard.episodes ?? '?'}
-                </p>
-                {resumeCard.episodes && (
-                  <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden mt-2">
-                    <div
-                      className="h-full bg-secondary rounded-full transition-all"
-                      style={{ width: `${(resumeCard.currentEpisode / resumeCard.episodes) * 100}%` }}
-                    />
-                  </div>
-                )}
+        <ComingSoon version="0.2.0" title="Quick Resume">
+          <motion.section
+            className="mb-6"
+            variants={variants.fadeSlideUp}
+            initial="initial"
+            animate="animate"
+          >
+            <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-xs mb-3 px-1">Where Was I?</p>
+            <Link to={`/anime/${resumeCard.id}`} className="block">
+              <div className="bg-surface-container-lowest rounded-2xl island-shadow p-4 flex items-center gap-4 border border-outline-variant/20 hover:-translate-y-0.5 transition-transform">
+                <img
+                  src={resumeCard.image}
+                  alt={resumeCard.title}
+                  className="w-14 h-20 rounded-xl object-cover flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-label-sm text-secondary uppercase tracking-wider text-[10px] mb-0.5">
+                    {resumeCard.status === 'rewatching' ? `Rewatch #${resumeCard.rewatchCount ?? 1}` : 'Continue Watching'}
+                  </p>
+                  <h3 className="font-headline-sm text-primary truncate">{resumeCard.title}</h3>
+                  <p className="font-body-sm text-on-surface-variant text-xs mt-0.5">
+                    Ep {resumeCard.currentEpisode} / {resumeCard.episodes ?? '?'}
+                  </p>
+                  {resumeCard.episodes && (
+                    <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden mt-2">
+                      <div
+                        className="h-full bg-secondary rounded-full transition-all"
+                        style={{ width: `${(resumeCard.currentEpisode / resumeCard.episodes) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <span className="material-symbols-outlined text-primary text-2xl flex-shrink-0">play_circle</span>
               </div>
-              <span className="material-symbols-outlined text-primary text-2xl flex-shrink-0">play_circle</span>
-            </div>
-          </Link>
-        </motion.section>
+            </Link>
+          </motion.section>
+        </ComingSoon>
       )}
 
       {/* Current Focus Bento Grid */}
