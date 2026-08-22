@@ -59,22 +59,32 @@ export default function Recommend() {
     }
   };
   
-  const generateRecommendation = (finalAnswers: Record<string, string>) => {
-    // If Plan to Watch is empty, we can't recommend from it
-    if (planToWatch.length === 0) {
-      setStep(99); // 99 = empty state
-      return;
+  const generateRecommendation = async (finalAnswers: Record<string, string>) => {
+    let pool = [...planToWatch];
+    
+    // If Plan to Watch is empty, fetch from the Python-generated suggestions dataset
+    if (pool.length === 0) {
+      try {
+        const res = await fetch('/suggestions.json');
+        if (res.ok) {
+          pool = await res.json();
+        } else {
+          setStep(99); // 99 = empty state
+          return;
+        }
+      } catch (e) {
+        setStep(99);
+        return;
+      }
     }
     
     // Simple filtering based on answers
-    let pool = [...planToWatch];
+    let filteredPool = [...pool];
     
-    // Bug fix: use bracket notation — finalAnswers['length'] is the quiz answer key,
-    // NOT the Array.length property (which would always be undefined on a Record)
     if (finalAnswers['length'] === 'short') {
-      pool = pool.filter(a => a.episodes && a.episodes <= 26);
+      filteredPool = filteredPool.filter(a => a.episodes && a.episodes <= 26);
     } else if (finalAnswers['length'] === 'long') {
-      pool = pool.filter(a => !a.episodes || a.episodes > 26);
+      filteredPool = filteredPool.filter(a => !a.episodes || a.episodes > 26);
     }
     
     if (finalAnswers.vibe !== 'any') {
@@ -86,23 +96,23 @@ export default function Recommend() {
       };
       
       const targetGenres = vibeMap[finalAnswers.vibe];
-      pool = pool.filter(a => a.genres?.some(g => targetGenres.includes(g)));
+      filteredPool = filteredPool.filter(a => a.genres?.some((g: string) => targetGenres.includes(g)));
     }
     
     if (finalAnswers.era === 'modern') {
-      pool = pool.filter(a => a.year && a.year >= 2015);
+      filteredPool = filteredPool.filter(a => a.year && a.year >= 2015);
     } else if (finalAnswers.era === 'classic') {
-      pool = pool.filter(a => a.year && a.year < 2015);
+      filteredPool = filteredPool.filter(a => a.year && a.year < 2015);
     }
     
-    // If filtering was too strict and pool is empty, fallback to a random one from the whole PTW
-    if (pool.length === 0) {
-      pool = [...planToWatch];
+    // If filtering was too strict and pool is empty, fallback to the unfiltered pool
+    if (filteredPool.length === 0) {
+      filteredPool = pool;
     }
     
     // Pick a random anime from the pool
-    const randomPick = pool[Math.floor(Math.random() * pool.length)];
-    setRecommendation(randomPick);
+    const randomPick = filteredPool[Math.floor(Math.random() * filteredPool.length)];
+    setRecommendation(randomPick as AnimeEntry);
     setStep(100); // 100 = result state
   };
 
