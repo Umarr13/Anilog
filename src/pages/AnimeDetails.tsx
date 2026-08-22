@@ -415,6 +415,47 @@ export default function AnimeDetails() {
             </div>
           </section>
 
+          {/* Franchise Timeline / Sequels */}
+          {anilistData?.relations?.edges && anilistData.relations.edges.length > 0 && (
+            <motion.section
+              className="mt-4 mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...transitions.default, delay: 0.2 }}
+            >
+              <h3 className="font-headline-md text-headline-md text-primary mb-4">Franchise</h3>
+              <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
+                {anilistData.relations.edges
+                  .filter(edge => ['PREQUEL', 'SEQUEL', 'SPIN_OFF', 'SIDE_STORY', 'ALTERNATIVE'].includes(edge.relationType))
+                  .map(edge => (
+                    <div 
+                      key={edge.node.id} 
+                      className="snap-start flex-shrink-0 w-[120px] md:w-[140px] flex flex-col gap-2 cursor-pointer group"
+                      onClick={() => {
+                        Haptics.impact({ style: ImpactStyle.Light });
+                        navigate(`/anime/${edge.node.id}`);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container relative island-shadow-sm">
+                        <img 
+                          src={edge.node.coverImage.large} 
+                          alt={edge.node.title.english || edge.node.title.romaji}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 bg-secondary/90 text-on-secondary px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase backdrop-blur-md">
+                          {edge.relationType.replace('_', ' ')}
+                        </div>
+                      </div>
+                      <p className="font-label-sm text-label-sm text-primary line-clamp-2 group-hover:text-secondary transition-colors">
+                        {edge.node.title.english || edge.node.title.romaji}
+                      </p>
+                    </div>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
           {/* Personal Log (Only if in collection) */}
           {localEntry && (
             <motion.section
