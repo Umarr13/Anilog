@@ -14,12 +14,16 @@ import { getDashboardPriorityCard } from '../lib/dashboardPriority';
 export default function Dashboard() {
   const allAnime = useLiveQuery(() => db.anime.toArray()) || [];
   
-  const watching = allAnime.filter(a => a.status === 'watching');
+  const watching = allAnime.filter(a => a.status === 'watching' || a.status === 'rewatching');
   const completed = allAnime.filter(a => a.status === 'completed');
   const planToWatch = allAnime.filter(a => a.status === 'plan_to_watch');
   
+  // "Where Was I?" — single most recently updated active show
+  const resumeCard = [...watching].sort((a, b) => b.updatedAt - a.updatedAt)[0] ?? null;
+
   // Get the 4 most recently updated "watching" anime
   const recentFocus = watching.sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 4);
+
   
   const scoredAnime = allAnime.filter(a => a.score > 0);
   const avgScore = scoredAnime.length > 0 
@@ -104,9 +108,48 @@ export default function Dashboard() {
           </div>
         )}
       </motion.section>
+      {/* Feature #6 — "Where Was I?" Resume Card */}
+      {resumeCard && (
+        <motion.section
+          className="mb-6"
+          variants={variants.fadeSlideUp}
+          initial="initial"
+          animate="animate"
+        >
+          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest text-xs mb-3 px-1">Where Was I?</p>
+          <Link to={`/anime/${resumeCard.id}`} className="block">
+            <div className="bg-surface-container-lowest rounded-2xl island-shadow p-4 flex items-center gap-4 border border-outline-variant/20 hover:-translate-y-0.5 transition-transform">
+              <img
+                src={resumeCard.image}
+                alt={resumeCard.title}
+                className="w-14 h-20 rounded-xl object-cover flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="font-label-sm text-secondary uppercase tracking-wider text-[10px] mb-0.5">
+                  {resumeCard.status === 'rewatching' ? `Rewatch #${resumeCard.rewatchCount ?? 1}` : 'Continue Watching'}
+                </p>
+                <h3 className="font-headline-sm text-primary truncate">{resumeCard.title}</h3>
+                <p className="font-body-sm text-on-surface-variant text-xs mt-0.5">
+                  Ep {resumeCard.currentEpisode} / {resumeCard.episodes ?? '?'}
+                </p>
+                {resumeCard.episodes && (
+                  <div className="h-1 w-full bg-surface-container-high rounded-full overflow-hidden mt-2">
+                    <div
+                      className="h-full bg-secondary rounded-full transition-all"
+                      style={{ width: `${(resumeCard.currentEpisode / resumeCard.episodes) * 100}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+              <span className="material-symbols-outlined text-primary text-2xl flex-shrink-0">play_circle</span>
+            </div>
+          </Link>
+        </motion.section>
+      )}
 
       {/* Current Focus Bento Grid */}
       {recentFocus.length > 0 ? (
+
         <motion.section
           className="grid grid-cols-2 gap-4 mb-8"
           variants={variants.staggerContainer}

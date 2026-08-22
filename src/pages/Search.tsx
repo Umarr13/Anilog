@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { searchAnime, getTrendingAnime, type AniListAnime } from '../api/anilist';
+import { searchAnime, getTrendingAnime, getTopRatedAnime, getHiddenGems, type AniListAnime } from '../api/anilist';
 import Skeleton from '../components/Skeleton';
 import { transitions, variants } from '../hooks/useMotion';
 
@@ -26,6 +26,7 @@ export default function Search() {
   });
   const [results, setResults] = useState<AniListAnime[]>([]);
   const [trending, setTrending] = useState<AniListAnime[]>([]);
+  const [discoverTab, setDiscoverTab] = useState<'trending' | 'top_rated' | 'hidden_gems'>('trending');
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem('anilog_recent_searches') || '[]'); } catch { return []; }
   });
@@ -48,7 +49,14 @@ export default function Search() {
       setError('');
       try {
         if (query.trim() === '') {
-          const trend = await getTrendingAnime();
+          let trend: AniListAnime[];
+          if (discoverTab === 'top_rated') {
+            trend = await getTopRatedAnime();
+          } else if (discoverTab === 'hidden_gems') {
+            trend = await getHiddenGems();
+          } else {
+            trend = await getTrendingAnime();
+          }
           setResults(trend);
           setTrending(trend.slice(0, 4));
         } else {
@@ -76,7 +84,7 @@ export default function Search() {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query]); // ✅ recentSearches removed from deps — read via ref to prevent infinite loop
+  }, [query, discoverTab]); // re-fetch when discover tab changes
 
   // Bug Fix: Scroll to top on mount so search input is always visible (even on back navigation)
   useEffect(() => {
@@ -139,9 +147,28 @@ export default function Search() {
 
       {/* Results Section */}
       <section className="flex flex-col gap-stack-md w-full mt-8">
+        {/* Discover tabs (only when no active query) */}
+        {!query && (
+          <div className="flex gap-2 mb-2 overflow-x-auto no-scrollbar">
+            {([['trending', 'Trending'], ['top_rated', 'Top Rated'], ['hidden_gems', 'Hidden Gems']] as const).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setDiscoverTab(key)}
+                className={`flex-shrink-0 px-4 py-2 rounded-full font-label-md text-sm transition-colors border ${
+                  discoverTab === key
+                    ? 'bg-primary text-on-primary border-primary'
+                    : 'bg-surface-container border-outline-variant/30 text-on-surface-variant hover:border-primary'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
         <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">
-          {query ? 'Search Results' : 'Trending Now'}
+          {query ? 'Search Results' : discoverTab === 'top_rated' ? 'Top Rated All Time' : discoverTab === 'hidden_gems' ? 'Hidden Gems' : 'Trending Now'}
         </h2>
+
 
         {/* 3.6 — Skeleton loaders */}
         {loading ? (

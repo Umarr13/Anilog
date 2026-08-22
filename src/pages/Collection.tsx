@@ -18,8 +18,8 @@ import { useSound } from '../hooks/useSound';
 import { useEffect } from 'react';
 import PullToRefresh from '../components/PullToRefresh';
 
-const TAB_LABELS = ['Watched', 'Watching', 'Plan to Watch'] as const;
-const STATUSES: AnimeEntry['status'][] = ['completed', 'watching', 'plan_to_watch'];
+const TAB_LABELS = ['Watched', 'Watching', 'Plan to Watch', 'Rewatching', 'Paused', 'Dropped'] as const;
+const STATUSES: AnimeEntry['status'][] = ['completed', 'watching', 'plan_to_watch', 'rewatching', 'paused', 'dropped'];
 
 // 3.5 — Per-tab empty state content
 const EMPTY_STATES: Record<string, { icon: string; title: string; message: string }> = {
@@ -37,6 +37,21 @@ const EMPTY_STATES: Record<string, { icon: string; title: string; message: strin
     icon: 'bookmark_add',
     title: 'Your watchlist is empty',
     message: 'Browse and save anime you want to watch later.',
+  },
+  rewatching: {
+    icon: 'replay',
+    title: 'No rewatches yet',
+    message: 'Start rewatching a classic from your completed list.',
+  },
+  paused: {
+    icon: 'pause_circle',
+    title: 'Nothing on hold',
+    message: 'Paused shows you plan to return to will appear here.',
+  },
+  dropped: {
+    icon: 'cancel',
+    title: 'Nothing dropped',
+    message: 'Shows you decided not to continue will appear here.',
   },
 };
 
@@ -127,7 +142,7 @@ export default function Collection() {
   const getMenuItems = (anime: AnimeEntry): ContextMenuItem[] => {
     const items: ContextMenuItem[] = [];
 
-    if (anime.status === 'watching') {
+    if (anime.status === 'watching' || anime.status === 'rewatching') {
       items.push({
         icon: 'skip_next',
         label: 'Mark next episode',
@@ -135,12 +150,35 @@ export default function Collection() {
       });
     }
 
+    if (anime.status === 'completed') {
+      items.push({
+        icon: 'replay',
+        label: 'Start Rewatch',
+        onClick: () =>
+          db.anime.update(anime.id, {
+            status: 'rewatching',
+            currentEpisode: 0,
+            rewatchCount: (anime.rewatchCount ?? 0) + 1,
+            updatedAt: Date.now(),
+          }),
+      });
+    }
+
+    const ICON_MAP: Record<string, string> = {
+      completed: 'check_circle',
+      watching: 'play_circle',
+      plan_to_watch: 'bookmark',
+      rewatching: 'replay',
+      paused: 'pause_circle',
+      dropped: 'cancel',
+    };
+
     // Status change options (show statuses other than current)
     const otherStatuses = STATUSES.filter((s) => s !== anime.status);
     for (const s of otherStatuses) {
       items.push({
-        icon: s === 'completed' ? 'check_circle' : s === 'watching' ? 'play_circle' : 'bookmark',
-        label: `Move to ${s.replace('_', ' ')}`,
+        icon: ICON_MAP[s] ?? 'bookmark',
+        label: `Move to ${s.replace(/_/g, ' ')}`,
         onClick: () => handleStatusChange(anime, s),
       });
     }
@@ -272,6 +310,20 @@ export default function Collection() {
                         {isGridMode && (
                           <div className="absolute inset-x-0 bottom-0 p-3 pt-8 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end rounded-b-xl">
                             <h3 className="text-white font-headline-sm text-sm truncate w-full">{anime.title}</h3>
+                            {/* Progress bar in grid mode */}
+                            {(anime.status === 'watching' || anime.status === 'rewatching') && anime.episodes && (
+                              <div className="mt-1.5">
+                                <div className="h-1 w-full bg-white/20 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-secondary rounded-full"
+                                    style={{ width: `${(anime.currentEpisode / anime.episodes) * 100}%` }}
+                                  />
+                                </div>
+                                <span className="text-white/70 text-[9px] mt-0.5 block">
+                                  {anime.currentEpisode}/{anime.episodes} eps
+                                </span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -283,7 +335,8 @@ export default function Collection() {
                             <p className="font-body-md text-body-md text-on-surface-variant text-sm truncate">
                               {anime.episodes ? `${anime.episodes} Episodes` : 'Ongoing'} • {anime.genres.join(', ')}
                             </p>
-                            {anime.status === 'watching' && (
+                            {/* Progress bar for watching/rewatching in list mode */}
+                            {(anime.status === 'watching' || anime.status === 'rewatching') && (
                               <div className="flex items-center gap-1 mt-1">
                                 <div className="h-1.5 flex-1 max-w-[120px] bg-surface-container-high rounded-full overflow-hidden">
                                   <div
@@ -295,6 +348,13 @@ export default function Collection() {
                                   {anime.currentEpisode}/{anime.episodes || '?'}
                                 </span>
                               </div>
+                            )}
+                            {/* Rewatch count badge */}
+                            {(anime.rewatchCount ?? 0) > 0 && (
+                              <span className="inline-flex items-center gap-0.5 text-xs font-label-sm text-secondary mt-0.5">
+                                <span className="material-symbols-outlined text-[12px]">replay</span>
+                                Rewatched × {anime.rewatchCount}
+                              </span>
                             )}
                           </div>
                           <div className="text-right pl-4 border-l border-surface-variant">

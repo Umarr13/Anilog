@@ -16,6 +16,7 @@ import SwipeBack from '../components/SwipeBack';
 import SaveIndicator from '../components/SaveIndicator';
 import Skeleton from '../components/Skeleton';
 import { useToast } from '../components/Toast';
+import RateSheet from '../components/RateSheet';
 import { transitions, variants } from '../hooks/useMotion';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
@@ -30,6 +31,7 @@ export default function AnimeDetails() {
   const [error, setError] = useState('');
   const [saveFlash, setSaveFlash] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showRateSheet, setShowRateSheet] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
@@ -83,7 +85,9 @@ export default function AnimeDetails() {
       genres: anilistData.genres,
       year: anilistData.seasonYear,
       studios: anilistData.studios?.nodes?.map(n => n.name) || [],
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      avgEpisodeDuration: anilistData.duration ?? null,
+      rewatchCount: 0,
     });
 
     if (status === 'plan_to_watch') {
@@ -124,6 +128,8 @@ export default function AnimeDetails() {
     if (localEntry.episodes && newEp === localEntry.episodes && localEntry.status !== 'completed') {
       await db.anime.update(animeId, { status: 'completed', updatedAt: Date.now() });
       triggerCelebration();
+      // Feature #14 — prompt to rate after completing
+      setTimeout(() => setShowRateSheet(true), 2600);
     }
   };
 
@@ -389,18 +395,29 @@ export default function AnimeDetails() {
                       value={userStatus}
                       onChange={(e) => {
                         const newStatus = e.target.value as AnimeEntry['status'];
-                        db.anime.update(animeId, { status: newStatus, updatedAt: Date.now() }).then(() => {
+                        const updates: Partial<AnimeEntry> = { status: newStatus, updatedAt: Date.now() };
+                        // Starting a rewatch: increment rewatch count and reset progress
+                        if (newStatus === 'rewatching' && localEntry?.status !== 'rewatching') {
+                          updates.rewatchCount = (localEntry?.rewatchCount ?? 0) + 1;
+                          updates.currentEpisode = 0;
+                        }
+                        db.anime.update(animeId, updates).then(() => {
                           flashSave();
-                          if (newStatus === 'completed') triggerCelebration();
+                          if (newStatus === 'completed') {
+                            triggerCelebration();
+                            setTimeout(() => setShowRateSheet(true), 2600);
+                          }
                         });
                       }}
                     >
                       <option value="watching">Watching</option>
+                      <option value="rewatching">Rewatching</option>
                       <option value="completed">Watched</option>
                       <option value="plan_to_watch">Plan to Watch</option>
                       <option value="paused">Paused</option>
                       <option value="dropped">Dropped</option>
                     </select>
+
                     <button className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-tint transition-colors pointer-events-none">
                       <span className="material-symbols-outlined">edit</span>
                     </button>
@@ -472,6 +489,20 @@ export default function AnimeDetails() {
           )}
         </motion.main>
       </div>
+
+      {/* Feature #14 — Quick Rate After Completing */}
+      <RateSheet
+        isOpen={showRateSheet}
+        animeTitle={displayTitle ?? ''}
+        currentScore={userScore}
+        onRate={async (score) => {
+          await db.anime.update(animeId, { score, updatedAt: Date.now() });
+          flashSave();
+          setShowRateSheet(false);
+          showToast(`Rated ${score}/5 ⭐`);
+        }}
+        onDismiss={() => setShowRateSheet(false)}
+      />
     </SwipeBack>
   );
 }
