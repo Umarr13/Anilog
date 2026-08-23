@@ -5,6 +5,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type AnimeEntry } from '../data/db';
 import Layout from '../components/Layout';
 import SwipeBack from '../components/SwipeBack';
+import ComingSoon from '../components/ComingSoon';
 import { transitions, variants } from '../hooks/useMotion';
 
 const questions = [
@@ -43,6 +44,7 @@ export default function Recommend() {
   const navigate = useNavigate();
   const planToWatch = useLiveQuery(() => db.anime.where('status').equals('plan_to_watch').toArray()) || [];
   
+  const [source, setSource] = useState<'unselected' | 'mood' | 'watched'>('unselected');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [recommendation, setRecommendation] = useState<AnimeEntry | null>(null);
@@ -56,6 +58,24 @@ export default function Recommend() {
       setStep(step + 1);
     } else {
       generateRecommendation(newAnswers);
+    }
+  };
+
+  const generateWatchedRecommendation = async () => {
+    try {
+      const res = await fetch('/watched_suggestions.json');
+      if (res.ok) {
+        const pool = await res.json();
+        if (pool.length > 0) {
+          const randomPick = pool[Math.floor(Math.random() * pool.length)];
+          setRecommendation(randomPick as AnimeEntry);
+          setStep(100);
+          return;
+        }
+      }
+      setStep(98); // 98 = watched empty state
+    } catch (e) {
+      setStep(98);
     }
   };
   
@@ -122,13 +142,62 @@ export default function Recommend() {
         <div className="flex flex-col h-full min-h-[80vh] justify-center items-center relative">
           
           <button 
-            className="absolute top-0 left-0 text-on-surface-variant hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container"
-            onClick={() => navigate(-1)}
+            className="absolute top-0 left-0 text-on-surface-variant hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container z-10"
+            onClick={() => {
+              if (step === 100 || step === 99 || step === 98) {
+                setStep(0);
+                setSource('unselected');
+              } else if (source !== 'unselected') {
+                setSource('unselected');
+                setStep(0);
+                setAnswers({});
+              } else {
+                navigate(-1);
+              }
+            }}
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined">
+              {(source !== 'unselected' || step === 100 || step === 99 || step === 98) ? 'arrow_back' : 'close'}
+            </span>
           </button>
           
-          {step < questions.length && (
+          {source === 'unselected' && (
+            <motion.div
+              className="w-full max-w-md bg-surface-container-lowest rounded-2xl island-shadow p-8 flex flex-col items-center text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={transitions.default}
+            >
+              <h2 className="font-headline-lg text-headline-lg text-primary mb-8">How should we suggest?</h2>
+              
+              <div className="flex flex-col gap-4 w-full">
+                <button
+                  onClick={() => setSource('mood')}
+                  className="w-full py-6 px-6 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container hover:border-secondary transition-colors active:scale-[0.98] flex flex-col items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-3xl text-primary">psychology</span>
+                  <span className="font-label-lg text-on-surface">Mood-based Pick</span>
+                  <span className="font-body-sm text-on-surface-variant">Answer a few questions</span>
+                </button>
+
+                <ComingSoon version="0.1.5" title="Based on Watched">
+                  <button
+                    onClick={() => {
+                      setSource('watched');
+                      generateWatchedRecommendation();
+                    }}
+                    className="w-full py-6 px-6 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container hover:border-secondary transition-colors active:scale-[0.98] flex flex-col items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-3xl text-secondary">history</span>
+                    <span className="font-label-lg text-on-surface">Based on Watched</span>
+                    <span className="font-body-sm text-on-surface-variant">Custom Python AI Suggestions</span>
+                  </button>
+                </ComingSoon>
+              </div>
+            </motion.div>
+          )}
+
+          {source === 'mood' && step < questions.length && (
             <motion.div 
               key={step}
               className="w-full max-w-md bg-surface-container-lowest rounded-2xl island-shadow p-8 flex flex-col items-center text-center"
@@ -156,6 +225,22 @@ export default function Recommend() {
                   </button>
                 ))}
               </div>
+            </motion.div>
+          )}
+
+          {step === 98 && (
+            <motion.div
+              className="w-full max-w-md bg-surface-container-lowest rounded-2xl island-shadow p-8 text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <span className="material-symbols-outlined text-6xl text-secondary mb-4">error</span>
+              <h2 className="font-headline-lg text-primary mb-2">No Suggestions Found</h2>
+              <p className="font-body-md text-on-surface-variant mb-6">Make sure you have run the custom python script to generate 'watched_suggestions.json'.</p>
+              <button onClick={() => { setStep(0); setSource('unselected'); }} className="bg-primary text-on-primary px-6 py-3 rounded-full font-label-md inline-flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                Go Back
+              </button>
             </motion.div>
           )}
 
@@ -198,7 +283,11 @@ export default function Recommend() {
               
               <div className="flex gap-4 w-full">
                 <button 
-                  onClick={() => { setStep(0); setAnswers({}); }} 
+                  onClick={() => { 
+                    setStep(0); 
+                    setAnswers({}); 
+                    if (source === 'watched') generateWatchedRecommendation();
+                  }} 
                   className="flex-1 py-3 rounded-lg border border-outline-variant text-on-surface font-label-md hover:bg-surface-container-low transition-colors"
                 >
                   Try Again
