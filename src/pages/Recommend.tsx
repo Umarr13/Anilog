@@ -83,19 +83,27 @@ export default function Recommend() {
   const generateRecommendation = async (finalAnswers: Record<string, string>) => {
     let pool = [...planToWatch];
     
-    // If Plan to Watch is empty, fetch from the Python-generated suggestions dataset
-    if (pool.length === 0) {
+    // If Plan to Watch is small, augment it with the Python-generated suggestions dataset
+    if (pool.length < 20) {
       try {
         const res = await fetch('/suggestions.json');
         if (res.ok) {
-          pool = await res.json();
-        } else {
+          const fetched = await res.json();
+          const existingIds = new Set(pool.map(a => a.id));
+          for (const item of fetched) {
+            if (!existingIds.has(item.id)) {
+              pool.push(item);
+            }
+          }
+        } else if (pool.length === 0) {
           setStep(99); // 99 = empty state
           return;
         }
       } catch (e) {
-        setStep(99);
-        return;
+        if (pool.length === 0) {
+          setStep(99);
+          return;
+        }
       }
     }
     
