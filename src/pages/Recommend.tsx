@@ -5,7 +5,6 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type AnimeEntry } from '../data/db';
 import Layout from '../components/Layout';
 import SwipeBack from '../components/SwipeBack';
-import ComingSoon from '../components/ComingSoon';
 import { transitions, variants } from '../hooks/useMotion';
 
 const questions = [
