@@ -67,7 +67,9 @@ export default function Recommend() {
       if (res.ok) {
         const pool = await res.json();
         if (pool.length > 0) {
-          const randomPick = pool[Math.floor(Math.random() * pool.length)];
+          let validPool = pool.filter((a: any) => a.id !== recommendation?.id);
+          if (validPool.length === 0) validPool = pool;
+          const randomPick = validPool[Math.floor(Math.random() * validPool.length)];
           setRecommendation(randomPick as AnimeEntry);
           setStep(100);
           return;
@@ -130,8 +132,11 @@ export default function Recommend() {
       filteredPool = pool;
     }
     
+    let validPool = filteredPool.filter(a => a.id !== recommendation?.id);
+    if (validPool.length === 0) validPool = filteredPool;
+    
     // Pick a random anime from the pool
-    const randomPick = filteredPool[Math.floor(Math.random() * filteredPool.length)];
+    const randomPick = validPool[Math.floor(Math.random() * validPool.length)];
     setRecommendation(randomPick as AnimeEntry);
     setStep(100); // 100 = result state
   };
@@ -180,19 +185,17 @@ export default function Recommend() {
                   <span className="font-body-sm text-on-surface-variant">Answer a few questions</span>
                 </button>
 
-                <ComingSoon version="0.1.5" title="Based on Watched">
-                  <button
-                    onClick={() => {
-                      setSource('watched');
-                      generateWatchedRecommendation();
-                    }}
-                    className="w-full py-6 px-6 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container hover:border-secondary transition-colors active:scale-[0.98] flex flex-col items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined text-3xl text-secondary">history</span>
-                    <span className="font-label-lg text-on-surface">Based on Watched</span>
-                    <span className="font-body-sm text-on-surface-variant">Custom Python AI Suggestions</span>
-                  </button>
-                </ComingSoon>
+                <button
+                  onClick={() => {
+                    setSource('watched');
+                    generateWatchedRecommendation();
+                  }}
+                  className="w-full py-6 px-6 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container hover:border-secondary transition-colors active:scale-[0.98] flex flex-col items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-3xl text-secondary">history</span>
+                  <span className="font-label-lg text-on-surface">Based on Watched</span>
+                  <span className="font-body-sm text-on-surface-variant">Custom Python AI Suggestions</span>
+                </button>
               </div>
             </motion.div>
           )}
