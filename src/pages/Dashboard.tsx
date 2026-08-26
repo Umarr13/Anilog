@@ -111,7 +111,6 @@ export default function Dashboard() {
       </motion.section>
       {/* Feature #6 — "Where Was I?" Resume Card */}
       {resumeCard && (
-        <ComingSoon version="0.2.0" title="Quick Resume">
           <motion.section
             className="mb-6"
             variants={variants.fadeSlideUp}
@@ -147,7 +146,6 @@ export default function Dashboard() {
               </div>
             </Link>
           </motion.section>
-        </ComingSoon>
       )}
 
       {/* Current Focus Bento Grid */}
