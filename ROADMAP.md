@@ -189,6 +189,9 @@ Define a single easing curve and duration system. Apply to all page transitions,
 ### 3.10 First-Run Onboarding
 2–3 screen overlay (skippable with one tap) explaining the app. Shown once, tracked via `localStorage`. New component: `src/components/Onboarding.tsx`.
 
+### 3.11 Anime Streaming & External Player Integration
+Integrate Th3-Anime API keys to allow users to stream anime directly within the app or open streams using external players like VLC and MX Player.
+
 ---
 
 ## Phase 4: Advanced Features → `v0.3.0-beta`

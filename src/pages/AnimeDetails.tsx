@@ -19,6 +19,7 @@ import { useToast } from '../components/Toast';
 import RateSheet from '../components/RateSheet';
 import { transitions, variants } from '../hooks/useMotion';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import ComingSoon from '../components/ComingSoon';
 
 export default function AnimeDetails() {
   const navigate = useNavigate();
@@ -393,6 +394,23 @@ export default function AnimeDetails() {
                   </div>
                 </div>
               )}
+
+              {/* Watch Feature */}
+              <div className="mt-4">
+                <ComingSoon version="0.2.0" title="Watch & Stream">
+                  <div className="bg-surface-variant rounded-[24px] p-5 border border-surface flex flex-col gap-3">
+                    <div className="flex items-center gap-2 text-primary">
+                      <span className="material-symbols-outlined">play_circle</span>
+                      <h3 className="font-title-md text-title-md">Play Anime</h3>
+                    </div>
+                    <p className="text-body-sm text-on-surface-variant">Stream directly in-app or play via external VLC / MX Player. Powered by Th3-Anime API keys.</p>
+                    <button disabled className="mt-auto py-2 bg-primary/50 text-on-primary rounded-full font-label-md flex justify-center items-center gap-2">
+                      <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                      Watch Now
+                    </button>
+                  </div>
+                </ComingSoon>
+              </div>
 
               {/* Collection Actions (if not in collection) */}
               {!localEntry && (
