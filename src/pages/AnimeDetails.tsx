@@ -19,7 +19,6 @@ import { useToast } from '../components/Toast';
 import RateSheet from '../components/RateSheet';
 import { transitions, variants } from '../hooks/useMotion';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import ComingSoon from '../components/ComingSoon';
 
 export default function AnimeDetails() {
   const navigate = useNavigate();

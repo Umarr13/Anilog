@@ -7,7 +7,6 @@ import Layout from '../components/Layout.tsx';
 import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'framer-motion';
-import ComingSoon from '../components/ComingSoon';
 import { db } from '../data/db';
 import { transitions, variants } from '../hooks/useMotion';
 import { getDashboardPriorityCard } from '../lib/dashboardPriority';
